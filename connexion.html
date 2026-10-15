@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2f3640">
+  <title>Connexion | JEEP</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%}
+    body{min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:#1f2937;
+      background:linear-gradient(180deg,#4a525c 0%,#2f3640 30%,#505a66 58%,#b9bec6 78%,#eff0f4 100%);
+      background-attachment:fixed;display:flex;justify-content:center;padding:0 22px 30px}
+    .container{width:100%;max-width:420px}
+    .brand{margin:0 -22px 6px}
+    .brand img{width:100%;height:auto;display:block;
+      -webkit-mask-image:linear-gradient(to bottom,#000 68%,transparent 100%),linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
+      -webkit-mask-composite:source-in;
+      mask-image:linear-gradient(to bottom,#000 68%,transparent 100%),linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
+      mask-composite:intersect}
+    .field{display:flex;align-items:center;gap:12px;background:#fff;
+      border:1px solid #d5d9e0;border-radius:8px;padding:0 16px;margin-bottom:14px;height:56px}
+    .field svg{flex:0 0 auto;width:22px;height:22px;fill:none;stroke:#374151;
+      stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .field input{flex:1;min-width:0;border:0;outline:0;background:transparent;
+      font-size:16px;color:#111827;height:100%}
+    .field input::placeholder{color:#9ca3af}
+    .field:focus-within{border-color:#4b5563;box-shadow:0 0 0 2px rgba(75,85,99,.25)}
+    .toggle-password{width:auto;height:auto;margin:0;padding:6px 0 6px 8px;border:0;border-radius:0;
+      background:transparent;color:#6b7280;font-size:13px;font-weight:600;box-shadow:none;cursor:pointer}
+    .submit{width:100%;border:0;border-radius:40px;height:58px;margin-top:10px;
+      background:linear-gradient(180deg,#4b5563,#2f3640);color:#fff;
+      font-size:20px;font-weight:700;cursor:pointer;
+      box-shadow:0 10px 22px rgba(0,0,0,.25)}
+    .submit:disabled{opacity:.6;cursor:wait}
+    .message{display:none;padding:12px;border-radius:10px;margin:4px 0 12px;
+      font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+    .error{display:block;background:#48262b;color:#ffd9dd}
+    .bottom{text-align:center;margin-top:28px}
+    .bottom a{color:#1f2937;font-size:17px;text-decoration:underline}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="brand">
+      <img src="/logo.jpg" alt="JEEP">
+    </header>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+        <input id="phone" name="phone" type="tel" inputmode="numeric"
+          maxlength="8" placeholder="Entrez le numéro de téléphone"
+          autocomplete="tel-national" required>
+      </div>
+
+      <div class="field">
+        <svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>
+        <input id="password" name="password" type="password" maxlength="128"
+          placeholder="Entrez le mot de passe" autocomplete="current-password" required>
+        <button class="toggle-password" id="togglePassword" type="button"
+          aria-label="Afficher ou masquer le mot de passe">Afficher</button>
+      </div>
+
+      <div id="message" class="message" role="alert" aria-live="polite"></div>
+      <button class="submit" id="submitButton" type="submit">Se connecter</button>
+    </form>
+
+    <div class="bottom">
+      <a href="/">Créer un compte &gt;</a>
+    </div>
+  </main>
+
+  <script>
+    const AUTH_URL =
+      "https://yojqocfsgnepftsxkgvq.supabase.co/functions/v1/jeep-auth";
+
+    const form = document.getElementById("loginForm");
+    const phoneInput = document.getElementById("phone");
+    const passwordInput = document.getElementById("password");
+    const submitButton = document.getElementById("submitButton");
+    const messageBox = document.getElementById("message");
+    const togglePassword = document.getElementById("togglePassword");
+
+    function showError(text) {
+      messageBox.textContent = text;
+      messageBox.className = "message error";
+    }
+
+    function getErrorMessage(data) {
+      if (data && typeof data.error === "string") return data.error;
+      if (data && typeof data.message === "string") return data.message;
+      return "Connexion impossible. Vérifiez vos identifiants et réessayez.";
+    }
+
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 8);
+    });
+
+    togglePassword.addEventListener("click", () => {
+      const hidden = passwordInput.type === "password";
+      passwordInput.type = hidden ? "text" : "password";
+      togglePassword.textContent = hidden ? "Masquer" : "Afficher";
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      messageBox.className = "message";
+
+      const phone = phoneInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!/^\d{8}$/.test(phone)) {
+        showError("Le numéro de téléphone doit contenir exactement 8 chiffres.");
+        return;
+      }
+      if (password.length < 8 || password.length > 128) {
+        showError("Le mot de passe doit contenir entre 8 et 128 caractères.");
+        return;
+      }
+
+      submitButton.disabled = true;
+
+      try {
+        const response = await fetch(AUTH_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "login", phone, password })
+        });
+
+        let result;
+        try {
+          result = await response.json();
+        } catch {
+          throw new Error("Le serveur a renvoyé une réponse invalide.");
+        }
+
+        if (!response.ok || result.success === false || result.error) {
+          throw new Error(getErrorMessage(result));
+        }
+
+        if (!result.user || !result.user.id) {
+          throw new Error("La réponse du serveur est incomplète. Vérifiez la fonction jeep-auth.");
+        }
+
+        // Seules les informations de profil sont gardées temporairement.
+        // Le mot de passe n'est jamais enregistré.
+        const safeUser = {
+          id: result.user.id,
+          phone: result.user.phone,
+          referral_code: result.user.referral_code,
+          balance_xof: result.user.balance_xof
+        };
+
+        sessionStorage.setItem("jeep_new_account", JSON.stringify(safeUser));
+        passwordInput.value = "";
+
+        // Redirection automatique, sans message de succès
+        window.location.href = "/dashboard";
+        return;
+
+      } catch (error) {
+        showError(error.message || "Impossible de joindre le serveur. Vérifiez votre connexion Internet.");
+      }
+      submitButton.disabled = false;
+    });
+  </script>
+</body>
+      </html>
+      
