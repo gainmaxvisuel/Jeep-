@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0d">
+<title>Produits | JEEP</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#111827;--gray:#6b7280;--line:#e5e7eb}
+body{
+  font-family:Inter,Arial,Helvetica,sans-serif;color:var(--black);
+  background:#eef0f4;min-height:100vh;padding-bottom:110px
+}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer}
+.page{width:100%;max-width:560px;margin:auto}
+
+/* ---------- HERO (jeep.png) ---------- */
+.hero{
+  position:relative;height:430px;padding:16px 14px 0;
+  background:
+    linear-gradient(180deg,#00000066 0%,#00000022 45%,#000000aa 100%),
+    url("/jeep.png") center/cover no-repeat #0b0b0d;
+  color:#fff
+}
+.hero-bar{display:flex;justify-content:space-between;align-items:center}
+.hero-btn{
+  width:42px;height:42px;border:0;border-radius:14px;
+  background:#ffffff26;color:#fff;font-size:22px;display:grid;place-items:center;
+  backdrop-filter:blur(8px)
+}
+.hero-cards{
+  position:absolute;right:14px;top:80px;width:58%;
+  display:flex;flex-direction:column;gap:12px
+}
+.hero-card{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 16px;border:1.5px solid #ffffff55;border-radius:16px;
+  background:#00000066;backdrop-filter:blur(6px)
+}
+.hero-number{font-size:22px;font-weight:800;overflow-wrap:anywhere}
+.hero-link{font-size:13px;white-space:nowrap}
+.hero-title{
+  position:absolute;left:18px;bottom:46px;
+  font-size:13px;letter-spacing:2px;line-height:1.7;text-shadow:0 1px 6px #000
+}
+.hero-title strong{display:block;font-size:34px;font-weight:300;letter-spacing:5px;margin-bottom:6px}
+
+/* ---------- Feuille blanche ---------- */
+.sheet{
+  position:relative;margin:-26px 12px 0;padding:6px 20px 10px;
+  background:#fff;border-radius:26px;box-shadow:0 10px 30px #0000001a
+}
+
+.notice{
+  display:none;margin:16px 0 0;padding:13px 14px;border-radius:12px;
+  font-size:13px;line-height:1.6;background:#eee;color:#333
+}
+.notice.show{display:block}
+.notice.error{background:#fbe9e9;color:#8a2424}
+.notice.success{background:#e6f3ea;color:#1f6b3a}
+
+.auth-box{display:none;margin:16px 0 0;padding:16px;background:#f5f6f8;border-radius:16px}
+.auth-box.show{display:block}
+.auth-box h3{font-size:15px;margin-bottom:6px}
+.auth-box p{font-size:12px;color:var(--gray);line-height:1.5;margin-bottom:12px}
+.auth-box input{
+  width:100%;height:45px;border:1px solid #d9dbe0;border-radius:10px;
+  padding:0 12px;margin-bottom:10px;background:#fff
+}
+.auth-box button{
+  width:100%;height:44px;border:0;border-radius:11px;background:#1b2230;color:#fff;font-weight:700
+}
+
+/* ---------- Produits ---------- */
+.products{display:flex;flex-direction:column}
+.product-card{display:flex;gap:16px;align-items:flex-start;padding:26px 0;border-bottom:1px solid var(--line)}
+.product-card:last-child{border-bottom:0}
+.product-info{flex:1;min-width:0}
+.product-name{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:16px;overflow-wrap:anywhere}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:17px;padding:7px 0}
+.row span:first-child{color:var(--gray)}
+.row span:last-child{text-align:right;white-space:nowrap}
+.product-side{flex:0 0 38%;max-width:200px}
+.product-img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;display:block;
+  border:2px solid #c9ced8;border-radius:16px;background:#e9ebef
+}
+.product-action{
+  width:100%;height:52px;margin-top:14px;border:0;border-radius:14px;
+  background:linear-gradient(180deg,#2b3340,#0f141c);color:#fff;
+  font-size:19px;font-weight:700;letter-spacing:.5px;
+  box-shadow:0 8px 14px #0000002e
+}
+.product-action:active{transform:scale(.98)}
+.product-action:disabled{
+  background:#e3e5ea;color:#8a909b;box-shadow:none;cursor:not-allowed;transform:none
+}
+.product-card.inactive .product-img{filter:grayscale(1);opacity:.55}
+.product-card.inactive .product-name{color:#8a909b}
+
+.empty{padding:34px 10px;text-align:center;color:var(--gray);font-size:14px;line-height:1.7}
+.empty strong{display:block;color:#333;font-size:16px;margin-bottom:6px}
+
+/* ---------- Navigation ---------- */
+.bottom-nav{
+  position:fixed;z-index:100;left:0;right:0;bottom:0;
+  padding:10px 10px calc(10px + env(safe-area-inset-bottom));
+  background:#fffffff2;border-top:1px solid var(--line);backdrop-filter:blur(14px)
+}
+.bottom-nav-inner{
+  width:100%;max-width:560px;margin:auto;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr))
+}
+.nav-item{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;
+  padding:3px 0;color:#9aa0aa;font-size:12px;font-weight:600
+}
+.nav-item svg{width:28px;height:28px}
+.nav-item.active{color:#111827;font-weight:800}
+
+@media(max-width:380px){
+  .row{font-size:15px}
+  .product-name{font-size:19px}
+  .hero{height:400px}
+  .hero-number{font-size:19px}
+}
+</style>
+</head>
+
+<body>
+<main class="page">
+
+  <!-- Haut de page : image jeep.png -->
+  <section class="hero">
+    <div class="hero-bar">
+      <a class="hero-btn" href="/dashboard" aria-label="Retour à l'accueil">‹</a>
+      <button class="hero-btn" id="refreshBtn" aria-label="Actualiser">↻</button>
+    </div>
+
+    <div class="hero-cards">
+      <a class="hero-card" href="/mes-produits">
+        <strong class="hero-number" id="purchaseCount">—</strong>
+        <span class="hero-link">Mes produits ›</span>
+      </a>
+      <a class="hero-card" href="/transactions">
+        <strong class="hero-number" id="incomeTotal">—</strong>
+        <span class="hero-link">Mes revenus ›</span>
+      </a>
+    </div>
+
+    <div class="hero-title">
+      <strong>HIGH SAFETY</strong>
+      WORLD'S FIRST SAFE CHARGING<br>TRIPLE PROTECTION TECHNOLOGY
+    </div>
+  </section>
+
+  <section class="sheet">
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
+    <section class="auth-box" id="authBox">
+      <h3>Connexion nécessaire</h3>
+      <p>Connecte-toi pour consulter tes produits achetés et effectuer un achat.</p>
+      <form id="authForm">
+        <input id="phone" inputmode="numeric" maxlength="8"
+          pattern="[0-9]{8}" placeholder="Ton numéro à 8 chiffres" required>
+        <input id="password" type="password" minlength="8"
+          placeholder="Ton mot de passe" required>
+        <button type="submit">Continuer</button>
+      </form>
+    </section>
+
+    <section class="products" id="products" aria-live="polite">
+      <div class="empty">Chargement des produits…</div>
+    </section>
+  </section>
+</main>
+
+<nav class="bottom-nav" aria-label="Navigation principale">
+  <div class="bottom-nav-inner">
+    <a class="nav-item" href="/dashboard">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+      <span>Accueil</span>
+    </a>
+    <a class="nav-item active" href="/produits" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+      <span>Produit</span>
+    </a>
+    <a class="nav-item" href="/equipe">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5.2 4.8 1.4 7-6.2-3.5-6.2 3.5 1.4-7L2 9.4l7-.9z"/></svg>
+      <span>Équipe</span>
+    </a>
+    <a class="nav-item" href="/compte">
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.5"/><path d="M3 21c0-4.5 4-7 9-7s9 2.5 9 7z"/></svg>
+      <span>Mon compte</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+"use strict";
+
+const API = "https://yojqocfsgnepftsxkgvq.supabase.co/functions/v1/jeep-api";
+const PRODUCT_IMAGE = "/produit.png"; // une seule image pour tous les produits
+
+const $ = id => document.getElementById(id);
+const money = value => {
+  const n = Number(value);
+  return Number.isFinite(n)
+    ? new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(n)
+    : "—";
+};
+const fcfa = value => "FCFA " + money(value);
+
+let credentials = {
+  phone: sessionStorage.getItem("jeep_phone") || "",
+  password: sessionStorage.getItem("jeep_password") || ""
+};
+
+function showNotice(message, type="") {
+  const box = $("notice");
+  box.textContent = message;
+  box.className = "notice show" + (type ? " " + type : "");
+}
+
+async function api(action, extra={}) {
+  const body = {action, ...extra};
+
+  if (action !== "products") {
+    if (!credentials.phone || !credentials.password) {
+      $("authBox").classList.add("show");
+      throw new Error("Connecte-toi pour continuer.");
+    }
+    body.phone = credentials.phone;
+    body.password = credentials.password;
+  }
+
+  const response = await fetch(API, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+
+  let result;
+  try { result = await response.json(); }
+  catch { throw new Error("Réponse invalide du serveur."); }
+
+  if (!response.ok) throw new Error(result.error || "Une erreur est survenue.");
+  return result;
+}
+
+function createRow(label, value) {
+  const row = document.createElement("div");
+  row.className = "row";
+  const a = document.createElement("span");
+  a.textContent = label + " :";
+  const b = document.createElement("span");
+  b.textContent = value;
+  row.append(a, b);
+  return row;
+}
+
+function createProduct(product) {
+  // Seul un booléen strict true (produit activé dans la base) autorise l'achat.
+  const available = product.is_active === true;
+
+  const card = document.createElement("article");
+  card.className = "product-card" + (available ? "" : " inactive");
+
+  const info = document.createElement("div");
+  info.className = "product-info";
+
+  const name = document.createElement("h3");
+  name.className = "product-name";
+  name.textContent = product.name || "Produit JEEP";
+  info.appendChild(name);
+
+  info.append(
+    createRow("Prix", fcfa(product.price_xof)),
+    createRow("Durée", String(product.cycle_days) + " jours"),
+    createRow("Revenu quotidien", fcfa(product.daily_income_xof)),
+    createRow("Revenu total", fcfa(product.total_income_xof))
+  );
+
+  const side = document.createElement("div");
+  side.className = "product-side";
+
+  const img = document.createElement("img");
+  img.className = "product-img";
+  img.src = PRODUCT_IMAGE;
+  img.alt = product.name || "Produit JEEP";
+  img.loading = "lazy";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "product-action";
+  button.textContent = available ? "ACHETER" : "INDISPONIBLE";
+  button.disabled = !available;
+
+  if (available) {
+    button.addEventListener("click", async () => {
+      if (!credentials.phone || !credentials.password) {
+        $("authBox").classList.add("show");
+        $("authBox").scrollIntoView({behavior:"smooth", block:"center"});
+        showNotice("Connecte-toi avant d'acheter.");
+        return;
+      }
+
+      if (!confirm(
+        "Confirmer l'achat de " + (product.name || "ce produit") +
+        " au prix de " + fcfa(product.price_xof) + " ?"
+      )) return;
+
+      button.disabled = true;
+      button.textContent = "VÉRIFICATION…";
+
+      try {
+        const result = await api("purchase", {product_id: product.id});
+        showNotice(result.message || "Achat effectué.", "success");
+        await loadAll();
+      } catch (error) {
+        showNotice(error.message || "Achat impossible.", "error");
+        button.disabled = false;
+        button.textContent = "ACHETER";
+      }
+    });
+  }
+
+  side.append(img, button);
+  card.append(info, side);
+  return card;
+}
+
+async function loadProducts() {
+  const container = $("products");
+  container.replaceChildren();
+
+  try {
+    const result = await api("products");
+    const products = Array.isArray(result.products) ? result.products : [];
+
+    if (!products.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      const title = document.createElement("strong");
+      title.textContent = "Aucun produit pour le moment";
+      const description = document.createElement("span");
+      description.textContent = "Les produits apparaîtront ici dès qu'ils seront ajoutés.";
+      empty.append(title, description);
+      container.appendChild(empty);
+      return;
+    }
+
+    for (const product of products) container.appendChild(createProduct(product));
+  } catch (error) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = error.message || "Impossible de charger les produits.";
+    container.appendChild(empty);
+  }
+}
+
+async function loadSummary() {
+  if (!credentials.phone || !credentials.password) {
+    $("purchaseCount").textContent = "0";
+    $("incomeTotal").textContent = "FCFA 0";
+    $("authBox").classList.add("show");
+    return;
+  }
+
+  try {
+    const result = await api("product_summary");
+    $("purchaseCount").textContent = money(Number(result.purchase_count) || 0);
+    $("incomeTotal").textContent = fcfa(Number(result.received_income_xof) || 0);
+  } catch (error) {
+    $("purchaseCount").textContent = "—";
+    $("incomeTotal").textContent = "—";
+    showNotice(error.message || "Impossible de charger le résumé.", "error");
+  }
+}
+
+async function loadAll() {
+  await Promise.all([loadProducts(), loadSummary()]);
+}
+
+$("authForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const phone = $("phone").value.trim();
+  const password = $("password").value;
+
+  if (!/^[0-9]{8}$/.test(phone) || password.length < 8) {
+    showNotice("Vérifie ton numéro et ton mot de passe.", "error");
+    return;
+  }
+
+  credentials = {phone, password};
+  sessionStorage.setItem("jeep_phone", phone);
+  sessionStorage.setItem("jeep_password", password);
+
+  try {
+    await api("product_summary");
+    $("authBox").classList.remove("show");
+    showNotice("Connexion vérifiée.", "success");
+    await loadAll();
+  } catch (error) {
+    credentials = {phone:"", password:""};
+    sessionStorage.removeItem("jeep_phone");
+    sessionStorage.removeItem("jeep_password");
+    $("authBox").classList.add("show");
+    showNotice(error.message || "Connexion impossible.", "error");
+  }
+});
+
+$("refreshBtn").addEventListener("click", loadAll);
+
+loadAll();
+</script>
+</body>
+                                                     </html>
+  
