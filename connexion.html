@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4a515a">
+  <title>Connexion | JEEP</title>
+
+  <style>
+    :root {
+      --text: #2b323a;
+      --placeholder: #8b94a0;
+      --primary: #3a424c;
+      --danger: #b42318;
+      --success: #137547;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background:
+        linear-gradient(180deg,
+          #4a515a 0%,
+          #2e353e 38%,
+          #3d4550 52%,
+          #7b8591 66%,
+          #c3c8d0 80%,
+          #eff0f4 92%);
+      background-attachment: fixed;
+    }
+
+    body.lock { overflow: hidden; }
+
+    button, input { font: inherit; }
+
+    .brand {
+      flex: 1 1 auto;
+      min-height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 18px 10px;
+    }
+
+    .brand-text {
+      margin: 0;
+      font-weight: 900;
+      font-size: clamp(54px, 18vw, 96px);
+      letter-spacing: -1px;
+      color: #fff;
+      text-shadow: 0 4px 10px rgba(0,0,0,.35);
+      line-height: 1;
+    }
+
+    .logo {
+      display: none;
+      max-width: 80%;
+      max-height: 110px;
+      object-fit: contain;
+    }
+
+    main {
+      width: min(100% - 32px, 460px);
+      margin: 0 auto;
+      padding-bottom: 30px;
+    }
+
+    .message {
+      display: none;
+      margin: 0 0 14px;
+      padding: 12px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .message.error {
+      display: block;
+      color: var(--danger);
+      background: #fff1f0;
+      border: 1px solid #ffd7d3;
+    }
+    .message.success {
+      display: block;
+      color: var(--success);
+      background: #edf9f1;
+      border: 1px solid #c6eed4;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 62px;
+      margin-bottom: 14px;
+      padding: 0 16px;
+      background: #fff;
+      border: 1px solid #d5dae0;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+
+    .field:focus-within {
+      border-color: #596674;
+      box-shadow: 0 0 0 3px rgba(89,102,116,.18);
+    }
+
+    .field > svg {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: #3a424c;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .field > svg.solid { fill: #3a424c; stroke: none; }
+
+    .field input {
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      min-width: 0;
+      width: 100%;
+      height: 100%;
+      font-size: 18px;
+    }
+
+    .field input::placeholder { color: var(--placeholder); }
+
+    .country-btn {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 42px;
+      padding: 0 8px 0 6px;
+      border: 0;
+      border-radius: 999px;
+      background: #f1f3f6;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .country-btn:hover { background: #e7eaee; }
+    .country-btn:focus-visible {
+      outline: 3px solid rgba(89,102,116,.35);
+      outline-offset: 1px;
+    }
+
+    .chevron {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: #5d6875;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .flag {
+      display: inline-block;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.14);
+    }
+    .flag svg { display: block; width: 100%; height: 100%; }
+
+    .toggle {
+      flex-shrink: 0;
+      padding: 6px 2px;
+      border: 0;
+      background: transparent;
+      color: #5d6875;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .forgot {
+      display: block;
+      margin: -2px 4px 14px;
+      text-align: right;
+      color: #3a424c;
+      font-size: 15px;
+      text-decoration: none;
+    }
+    .forgot:hover { text-decoration: underline; }
+
+    .submit {
+      width: 100%;
+      height: 66px;
+      margin-top: 6px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(180deg, #4d5560 0%, #353d47 100%);
+      box-shadow: 0 10px 22px rgba(30,38,48,.28);
+      transition: filter .2s, opacity .2s;
+    }
+    .submit:hover { filter: brightness(1.1); }
+    .submit:disabled { opacity: .6; cursor: wait; }
+
+    .login {
+      margin: 30px 0 0;
+      text-align: center;
+      font-size: 20px;
+    }
+    .login a {
+      color: #3a424c;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(20,26,33,.55);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      animation: fade .18s ease-out;
+    }
+    .overlay[hidden] { display: none; }
+
+    .sheet {
+      width: min(100%, 480px);
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 10px 16px calc(20px + env(safe-area-inset-bottom));
+      background: #fff;
+      border-radius: 26px 26px 0 0;
+      box-shadow: 0 -12px 40px rgba(20,26,33,.25);
+      animation: slide .25s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .grabber {
+      width: 42px;
+      height: 5px;
+      margin: 2px auto 12px;
+      border-radius: 999px;
+      background: #d5dae0;
+    }
+
+    .sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 4px 12px;
+    }
+
+    .sheet-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+    }
+
+    .close {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: #f1f3f6;
+      color: #4a525c;
+      cursor: pointer;
+    }
+    .close:hover { background: #e4e7ec; }
+    .close svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      fill: none;
+    }
+
+    .options {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .option:hover { background: #f4f6f8; }
+    .option:focus-visible {
+      outline: 3px solid rgba(89,102,116,.35);
+      outline-offset: 0;
+    }
+    .option[aria-selected="true"] {
+      background: #eef0f4;
+      border-color: #d5dae0;
+    }
+
+    .option .flag { width: 34px; height: 34px; }
+
+    .option-name {
+      flex: 1;
+      font-size: 16px;
+      font-weight: 650;
+    }
+
+    .option-dial {
+      font-size: 15px;
+      font-weight: 600;
+      color: #6b7581;
+    }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      fill: none;
+      stroke: #137547;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      visibility: hidden;
+    }
+    .option[aria-selected="true"] .check { visibility: visible; }
+
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slide {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (min-width: 600px) {
+      .overlay { align-items: center; }
+      .sheet {
+        border-radius: 22px;
+        padding-bottom: 20px;
+      }
+      .grabber { display: none; }
+    }
+
+    @media (max-width: 360px) {
+      .field { height: 56px; padding: 0 12px; gap: 9px; }
+      .field input { font-size: 16px; }
+      .country-btn { font-size: 15px; gap: 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .overlay, .sheet { animation: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="brand">
+    <img id="brandLogo" class="logo" alt="Logo JEEP">
+    <h1 id="brandFallback" class="brand-text">JEEP</h1>
+  </header>
+
+  <main>
+    <div id="formMessage" class="message" role="alert" aria-live="polite"></div>
+
+    <form id="loginForm" autocomplete="on" novalidate>
+      <input type="hidden" id="country" name="country" value="BF">
+
+      <div class="field">
+        <button id="countryButton" class="country-btn" type="button"
+                aria-haspopup="dialog" aria-expanded="false"
+                aria-label="Choisir le pays">
+          <span id="countryFlag" class="flag"></span>
+          <span id="countryDial">+226</span>
+          <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </button>
+        <input id="phone" name="phone" type="tel" inputmode="numeric"
+               autocomplete="tel-national" placeholder="Entrez le numéro de téléphone"
+               aria-label="Numéro de téléphone" maxlength="10" required>
+      </div>
+
+      <div class="field">
+        <svg class="solid" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 10V7a5 5 0 0 1 9.6-2 1 1 0 1 1-1.9.7A3 3 0 0 0 9 7v3h8a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3zm5 4a1.5 1.5 0 0 0-.8 2.8V18h1.6v-1.2A1.5 1.5 0 0 0 12 14z"></path>
+        </svg>
+        <input id="password" name="password" type="password"
+               autocomplete="current-password" minlength="8" maxlength="128"
+               placeholder="Entrez le mot de passe" aria-label="Mot de passe" required>
+        <button class="toggle" type="button" id="togglePassword">Afficher</button>
+      </div>
+
+      <a class="forgot" href="#" id="forgotLink">Mot de passe oublié ?</a>
+
+      <button id="submitButton" class="submit" type="submit">Se connecter</button>
+    </form>
+
+    <p class="login"><a href="/">Créer un compte &gt;</a></p>
+  </main>
+
+  <div id="countryOverlay" class="overlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true"
+         aria-labelledby="sheetTitle">
+      <div class="grabber" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <h2 id="sheetTitle" class="sheet-title">Choisir le pays</h2>
+        <button id="closeSheet" class="close" type="button" aria-label="Fermer">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <ul id="countryList" class="options" role="listbox"
+          aria-label="Liste des pays"></ul>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    const API_URL =
+      "https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api";
+
+    const form = document.getElementById("loginForm");
+    const country = document.getElementById("country");
+    const phone = document.getElementById("phone");
+    const password = document.getElementById("password");
+    const submitButton = document.getElementById("submitButton");
+    const formMessage = document.getElementById("formMessage");
+
+    const countryButton = document.getElementById("countryButton");
+    const countryFlag = document.getElementById("countryFlag");
+    const countryDial = document.getElementById("countryDial");
+    const countryOverlay = document.getElementById("countryOverlay");
+    const countryList = document.getElementById("countryList");
+    const closeSheet = document.getElementById("closeSheet");
+
+    function star(cx, cy, outer, fill) {
+      const inner = outer * 0.382;
+      const pts = [];
+      for (let i = 0; i < 10; i++) {
+        const radius = i % 2 === 0 ? outer : inner;
+        const angle = -Math.PI / 2 + i * Math.PI / 5;
+        pts.push((cx + radius * Math.cos(angle)).toFixed(2) + "," +
+                 (cy + radius * Math.sin(angle)).toFixed(2));
+      }
+      return '<polygon points="' + pts.join(" ") + '" fill="' + fill + '"/>';
+    }
+
+    const flags = {
+      BF:
+        '<svg viewBox="0 0 60 60" aria-hidden="true">' +
+        '<rect width="60" height="30" fill="#ef2b2d"/>' +
+        '<rect y="30" width="60" height="30" fill="#009e49"/>' +
+        star(30, 31, 13, "#fcd116") + "</svg>",
+      TG:
+        '<svg viewBox="0 0 60 60" aria-hidden="true">' +
+        '<rect width="60" height="60" fill="#006a4e"/>' +
+        '<rect y="12" width="60" height="12" fill="#ffce00"/>' +
+        '<rect y="36" width="60" height="12" fill="#ffce00"/>' +
+        '<rect width="36" height="36" fill="#d21034"/>' +
+        star(18, 19, 9, "#ffffff") + "</svg>",
+      CI:
+        '<svg viewBox="0 0 60 60" aria-hidden="true">' +
+        '<rect width="20" height="60" fill="#f77f00"/>' +
+        '<rect x="20" width="20" height="60" fill="#ffffff"/>' +
+        '<rect x="40" width="20" height="60" fill="#009e60"/></svg>'
+    };
+
+    const countryConfig = {
+      BF: { dial: "+226", digits: 8,  name: "Burkina Faso" },
+      TG: { dial: "+228", digits: 8,  name: "Togo" },
+      CI: { dial: "+225", digits: 10, name: "Côte d’Ivoire" }
+    };
+
+    function showMessage(message, type = "error") {
+      formMessage.textContent = message;
+      formMessage.className = "message " + type;
+    }
+
+    function clearMessage() {
+      formMessage.textContent = "";
+      formMessage.className = "message";
+    }
+
+    function setCountry(code) {
+      const config = countryConfig[code];
+      if (!config) return;
+
+      country.value = code;
+      countryFlag.innerHTML = flags[code];
+      countryDial.textContent = config.dial;
+      phone.maxLength = config.digits;
+      phone.value = phone.value.replace(/\D/g, "").slice(0, config.digits);
+
+      countryList.querySelectorAll(".option").forEach(option => {
+        option.setAttribute("aria-selected",
+          option.dataset.code === code ? "true" : "false");
+      });
+    }
+
+    function buildCountryList() {
+      countryList.innerHTML = "";
+
+      Object.keys(countryConfig).forEach(code => {
+        const config = countryConfig[code];
+        const item = document.createElement("li");
+        item.setAttribute("role", "presentation");
+
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "option";
+        option.dataset.code = code;
+        option.setAttribute("role", "option");
+        option.setAttribute("aria-selected", "false");
+        option.innerHTML =
+          '<span class="flag">' + flags[code] + "</span>" +
+          '<span class="option-name"></span>' +
+          '<span class="option-dial"></span>' +
+          '<svg class="check" viewBox="0 0 24 24" aria-hidden="true">' +
+          '<path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
+        option.querySelector(".option-name").textContent = config.name;
+        option.querySelector(".option-dial").textContent = config.dial;
+
+        option.addEventListener("click", () => {
+          setCountry(code);
+          clearMessage();
+          closeCountrySheet();
+          phone.focus();
+        });
+
+        item.appendChild(option);
+        countryList.appendChild(item);
+      });
+    }
+
+    function openCountrySheet() {
+      countryOverlay.hidden = false;
+      document.body.classList.add("lock");
+      countryButton.setAttribute("aria-expanded", "true");
+      const selected = countryList.querySelector('[aria-selected="true"]') ||
+                       countryList.querySelector(".option");
+      if (selected) selected.focus();
+    }
+
+    function closeCountrySheet() {
+      countryOverlay.hidden = true;
+      document.body.classList.remove("lock");
+      countryButton.setAttribute("aria-expanded", "false");
+      countryButton.focus();
+    }
+
+    countryButton.addEventListener("click", openCountrySheet);
+    closeSheet.addEventListener("click", closeCountrySheet);
+
+    countryOverlay.addEventListener("click", event => {
+      if (event.target === countryOverlay) closeCountrySheet();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (countryOverlay.hidden) return;
+
+      if (event.key === "Escape") {
+        closeCountrySheet();
+        return;
+      }
+
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const options = [...countryList.querySelectorAll(".option")];
+        const index = options.indexOf(document.activeElement);
+        const next = event.key === "ArrowDown"
+          ? options[(index + 1) % options.length]
+          : options[(index - 1 + options.length) % options.length];
+        next.focus();
+      }
+    });
+
+    phone.addEventListener("input", () => {
+      phone.value = phone.value.replace(/\D/g, "")
+        .slice(0, countryConfig[country.value].digits);
+      clearMessage();
+    });
+
+    password.addEventListener("input", clearMessage);
+
+    document.getElementById("togglePassword").addEventListener("click", event => {
+      const hidden = password.type === "password";
+      password.type = hidden ? "text" : "password";
+      event.currentTarget.textContent = hidden ? "Masquer" : "Afficher";
+    });
+
+    document.getElementById("forgotLink").addEventListener("click", event => {
+      event.preventDefault();
+      showMessage(
+        "La récupération automatique du mot de passe n’est pas encore configurée. Contactez le service client JEEP pour vérifier votre identité."
+      );
+    });
+
+    async function loadBranding() {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "branding" })
+        });
+        if (!response.ok) return;
+
+        const result = await response.json();
+        if (!result.ok || typeof result.logo_url !== "string") return;
+
+        const logo = document.getElementById("brandLogo");
+        logo.onload = () => {
+          logo.style.display = "block";
+          document.getElementById("brandFallback").style.display = "none";
+        };
+        logo.onerror = () => {
+          logo.style.display = "none";
+          document.getElementById("brandFallback").style.display = "block";
+        };
+        logo.src = result.logo_url;
+      } catch {
+        // Le formulaire reste utilisable même si le logo ne charge pas.
+      }
+    }
+
+    const errorMessages = {
+      INVALID_CREDENTIALS: "Numéro ou mot de passe incorrect.",
+      TOO_MANY_ATTEMPTS_TRY_LATER:
+        "Trop de tentatives. Attendez 15 minutes avant de réessayer.",
+      SESSION_CREATION_FAILED:
+        "Connexion vérifiée, mais la session n’a pas pu être créée. Réessayez.",
+      COUNTRY_NOT_ALLOWED: "Ce pays n’est pas autorisé.",
+      SESSION_INVALID: "Session invalide. Veuillez vous reconnecter."
+    };
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage();
+
+      const selectedCountry = country.value;
+      const config = countryConfig[selectedCountry];
+      const phoneValue = phone.value.trim();
+      const passwordValue = password.value;
+
+      if (!config) {
+        showMessage("Veuillez sélectionner un pays valide.");
+        return;
+      }
+
+      if (phoneValue.length !== config.digits || !/^\d+$/.test(phoneValue)) {
+        showMessage("Le numéro doit contenir exactement " +
+          config.digits + " chiffres.");
+        phone.focus();
+        return;
+      }
+
+      if (passwordValue.length < 8 || passwordValue.length > 128) {
+        showMessage("Le mot de passe doit contenir entre 8 et 128 caractères.");
+        password.focus();
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Connexion en cours…";
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "login",
+            country: selectedCountry,
+            phone: phoneValue,
+            password: passwordValue
+          })
+        });
+
+        let result;
+        try {
+          result = await response.json();
+        } catch {
+          throw new Error("Réponse du serveur invalide.");
+        }
+
+        if (!response.ok || result.ok !== true ||
+            !result.session_token || !result.user?.id) {
+          const code = result.error || "REQUEST_FAILED";
+          throw new Error(
+            errorMessages[code] ||
+            (code === "REQUEST_FAILED"
+              ? "Connexion impossible. Réessayez."
+              : "Erreur de connexion : " + code)
+          );
+        }
+
+        sessionStorage.setItem("jeep_session_token", result.session_token);
+        sessionStorage.setItem("jeep_user_id", result.user.id);
+        sessionStorage.setItem("jeep_user_country", result.user.country);
+
+        if (result.user.role) {
+          sessionStorage.setItem("jeep_user_role", result.user.role);
+        }
+
+        password.value = "";
+        showMessage("Connexion réussie. Ouverture de ton espace…", "success");
+        window.location.replace("/dashboard");
+      } catch (error) {
+        if (error instanceof TypeError) {
+          showMessage("Impossible de joindre le serveur. Vérifie ta connexion Internet puis réessaie.");
+        } else {
+          showMessage(error.message || "Une erreur est survenue.");
+        }
+
+        submitButton.disabled = false;
+        submitButton.textContent = "Se connecter";
+      }
+    });
+
+    buildCountryList();
+    setCountry("BF");
+    loadBranding();
+  </script>
+</body>
+</html>
