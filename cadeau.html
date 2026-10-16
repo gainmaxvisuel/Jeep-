@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4a515a">
+  <title>Cadeau | JEEP</title>
+
+  <style>
+    :root {
+      --bg: #eceef2;
+      --white: #ffffff;
+      --text: #20242b;
+      --muted: #737b87;
+      --border: #e5e7eb;
+      --dark: #303640;
+      --shadow: 0 6px 22px rgba(27,39,51,.06);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; background: var(--bg); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      height: 68px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      background: linear-gradient(165deg, #4d555f 0%, #2e353e 100%);
+      box-shadow: 0 4px 16px rgba(27,39,51,.18);
+    }
+
+    .back {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      text-decoration: none;
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .top-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 16px 12px 35px;
+    }
+
+    .hero {
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 26px 18px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .gift-icon {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background:
+        radial-gradient(90% 70% at 100% 0%, rgba(255,255,255,.14), transparent 65%),
+        linear-gradient(160deg, #4b535d 0%, #323a44 100%);
+      box-shadow: 0 8px 22px rgba(27,39,51,.22);
+    }
+
+    .gift-icon svg {
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1 {
+      font-size: 23px;
+      margin: 0 0 9px;
+      letter-spacing: -0.4px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 auto;
+      max-width: 330px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 20px 18px;
+      margin-top: 14px;
+    }
+
+    .card-title {
+      margin: 0 0 8px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 0 0 17px;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap { position: relative; }
+
+    input {
+      width: 100%;
+      min-height: 58px;
+      padding: 0 16px;
+      border: 1px solid #d5dae0;
+      border-radius: 14px;
+      background: #f6f7f9;
+      color: var(--text);
+      outline: none;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    input:focus {
+      border-color: #596674;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(89,102,116,.18);
+    }
+
+    input::placeholder {
+      color: #a3a9b2;
+      font-size: 13px;
+      letter-spacing: .5px;
+      font-weight: 400;
+    }
+
+    .claim-btn {
+      width: 100%;
+      min-height: 58px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #4d5560 0%, #353d47 100%);
+      box-shadow: 0 8px 18px rgba(30,38,48,.25);
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: filter .2s, opacity .2s;
+    }
+
+    .claim-btn:hover { filter: brightness(1.1); }
+
+    .claim-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 14px;
+      border-radius: 14px;
+      padding: 12px 13px;
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .message.success {
+      display: block;
+      color: #176b3b;
+      background: #eaf7ef;
+      border: 1px solid #ccebd7;
+    }
+
+    .message.error {
+      display: block;
+      color: #a52b22;
+      background: #fff0ef;
+      border: 1px solid #f2d0cd;
+    }
+
+    .message.info {
+      display: block;
+      color: #424b58;
+      background: #f0f2f5;
+      border: 1px solid #e0e4e9;
+    }
+
+    .steps {
+      display: grid;
+      gap: 16px;
+      margin-top: 17px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-number {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: #eceff3;
+      color: #3a424c;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 14px;
+      margin: 1px 0 4px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .security-note {
+      margin-top: 18px;
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      padding: 14px;
+      border-radius: 16px;
+      background: #eceff3;
+      color: #59616d;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .security-note svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      fill: none;
+      stroke: #3a424c;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .footer {
+      text-align: center;
+      color: #9299a3;
+      font-size: 11px;
+      margin-top: 22px;
+    }
+
+    @media (min-width: 600px) {
+      .container { padding-top: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="back" href="/dashboard" aria-label="Retour au tableau de bord">‹</a>
+    <div class="top-title">Cadeau</div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="gift-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="10" width="18" height="11" rx="1"/>
+          <path d="M2 7h20v4H2zM12 7v14"/>
+          <path d="M12 7H7a2 2 0 1 1 2-2c0 2 3 2 3 2Zm0 0h5a2 2 0 1 0-2-2c0 2-3 2-3 2Z"/>
+        </svg>
+      </div>
+      <h1>Votre espace cadeau</h1>
+      <p class="subtitle">
+        Vous possédez un code cadeau JEEP ?
+        Entrez-le ci-dessous pour vérifier sa validité et réclamer votre récompense.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2 class="card-title">Réclamer un cadeau</h2>
+      <p class="description">
+        Saisissez le code qui vous a été communiqué. Chaque code est soumis
+        à ses conditions, à sa période de validité et à sa limite d'utilisation.
+      </p>
+
+      <form id="giftForm">
+        <label class="label" for="giftCode">Code cadeau</label>
+        <div class="input-wrap">
+          <input
+            id="giftCode"
+            name="code"
+            type="text"
+            placeholder="EXEMPLE : JEEP2026"
+            minlength="4"
+            maxlength="40"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            required
+          >
+        </div>
+
+        <button class="claim-btn" id="claimButton" type="submit">
+          Réclamer mon cadeau
+        </button>
+      </form>
+
+      <div id="resultMessage" class="message" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="card-title">Comment ça marche ?</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div>
+            <strong>Obtenez un code</strong>
+            <p>Utilisez un code cadeau officiellement communiqué par JEEP.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div>
+            <strong>Entrez le code</strong>
+            <p>Saisissez-le dans le champ prévu, puis appuyez sur le bouton de réclamation.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div>
+            <strong>Vérification automatique</strong>
+            <p>Le serveur vérifie le code, son expiration et si votre compte l'a déjà utilisé.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="security-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="5" y="11" width="14" height="10" rx="2"/>
+          <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+        </svg>
+        <div>
+          <strong>Protection de votre compte</strong><br>
+          La validation est effectuée côté serveur. Ne communiquez jamais
+          votre mot de passe ou votre code de connexion pour recevoir un cadeau.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">JEEP · Espace cadeaux</div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const API_URL =
+      "https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api";
+
+    const form = document.getElementById("giftForm");
+    const codeInput = document.getElementById("giftCode");
+    const button = document.getElementById("claimButton");
+    const result = document.getElementById("resultMessage");
+
+    const tokenKey = "jeep_session_token";
+
+    function showMessage(type, message) {
+      result.className = "message " + type;
+      result.textContent = message;
+    }
+
+    function translateError(code) {
+      const errors = {
+        SESSION_INVALID:
+          "Votre session a expiré. Veuillez vous reconnecter.",
+        GIFT_CODE_UNAVAILABLE:
+          "Ce code cadeau est introuvable ou indisponible.",
+        GIFT_CODE_NOT_STARTED:
+          "Ce code cadeau n'est pas encore actif.",
+        GIFT_CODE_EXPIRED:
+          "La période de validité de ce cadeau est terminée.",
+        GIFT_CODE_EXHAUSTED:
+          "Ce code cadeau a atteint sa limite d'utilisation.",
+        GIFT_CODE_ALREADY_CLAIMED:
+          "Vous avez déjà utilisé ce code cadeau.",
+        REQUEST_FAILED:
+          "La réclamation n'a pas pu aboutir. Vérifiez le code et réessayez.",
+        INTERNAL_SERVER_ERROR:
+          "Une erreur serveur est survenue. Réessayez plus tard."
+      };
+
+      if (errors[code]) return errors[code];
+
+      if (code === "Failed to fetch") {
+        return "Connexion impossible au serveur. Vérifiez votre Internet et réessayez.";
+      }
+
+      return "La réclamation a échoué. Vérifiez le code ou contactez l'assistance.";
+    }
+
+    async function apiRequest(action, payload = {}) {
+      const token = sessionStorage.getItem(tokenKey);
+
+      if (!token) {
+        window.location.href = "/connexion";
+        throw new Error("SESSION_INVALID");
+      }
+
+      let response;
+
+      try {
+        response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            action,
+            ...payload
+          })
+        });
+      } catch {
+        throw new Error("Failed to fetch");
+      }
+
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("INTERNAL_SERVER_ERROR");
+      }
+
+      if (response.status === 401 || data.error === "SESSION_INVALID") {
+        sessionStorage.removeItem("jeep_session_token");
+        sessionStorage.removeItem("jeep_user_id");
+        sessionStorage.removeItem("jeep_user_country");
+        sessionStorage.removeItem("jeep_user_role");
+        window.location.href = "/connexion";
+        throw new Error("SESSION_INVALID");
+      }
+
+      if (!response.ok || data.error || data.ok === false) {
+        throw new Error(data.error || "REQUEST_FAILED");
+      }
+
+      return data;
+    }
+
+    codeInput.addEventListener("input", () => {
+      codeInput.value = codeInput.value
+        .toUpperCase()
+        .replace(/\s/g, "");
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const code = codeInput.value.trim().toUpperCase();
+
+      if (code.length < 4 || code.length > 40) {
+        showMessage("error", "Veuillez saisir un code valide.");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Vérification en cours…";
+      result.className = "message";
+      result.textContent = "";
+
+      try {
+        const data = await apiRequest("claim_gift", { code });
+
+        const reward = Number(
+          data.amount_xof ??
+          data.reward_xof ??
+          data.gift?.amount_xof ??
+          data.gift_code?.amount_xof
+        );
+
+        if (Number.isFinite(reward) && reward > 0) {
+          showMessage(
+            "success",
+            "Cadeau réclamé avec succès ! Récompense : " +
+            reward.toLocaleString("fr-FR") +
+            " FCFA. Consultez votre solde pour vérifier le crédit."
+          );
+        } else {
+          showMessage(
+            "success",
+            "Votre demande de cadeau a été acceptée par le serveur. Consultez votre solde pour confirmer la récompense."
+          );
+        }
+
+        codeInput.value = "";
+      } catch (error) {
+        showMessage("error", translateError(error.message));
+      } finally {
+        button.disabled = false;
+        button.textContent = "Réclamer mon cadeau";
+      }
+    });
+
+    if (!sessionStorage.getItem(tokenKey)) {
+      window.location.replace("/connexion");
+    }
+  </script>
+</body>
+</html>
