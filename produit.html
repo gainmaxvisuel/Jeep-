@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4a515a">
+  <title>Produits | JEEP</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --dark: #303741;
+      --dark2: #46515e;
+      --bg: #eceef2;
+      --white: #fff;
+      --text: #252c35;
+      --muted: #858d97;
+      --border: #e4e8ed;
+      --disabled: #d9dde3;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: calc(92px + env(safe-area-inset-bottom));
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { font: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      color: #fff;
+      background: linear-gradient(165deg, #4d555f 0%, #2e353e 100%);
+      box-shadow: 0 4px 16px rgba(27,39,51,.18);
+    }
+
+    .back {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.16);
+      font-size: 26px;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .page-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 650px;
+      margin: auto;
+      padding: 16px 12px 25px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat {
+      min-width: 0;
+      min-height: 130px;
+      padding: 18px 16px;
+      border-radius: 22px;
+      color: #fff;
+      background:
+        radial-gradient(90% 70% at 100% 0%, rgba(255,255,255,.12), transparent 65%),
+        linear-gradient(160deg, #4b535d 0%, #323a44 100%);
+      box-shadow: 0 8px 22px rgba(27,39,51,.18);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: rgba(255,255,255,.7);
+      line-height: 1.4;
+    }
+
+    .stat-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .stat-value {
+      font-size: clamp(24px, 7vw, 32px);
+      font-weight: 800;
+      letter-spacing: -.5px;
+      overflow-wrap: anywhere;
+    }
+
+    .stat-arrow {
+      flex-shrink: 0;
+      color: rgba(255,255,255,.6);
+      font-size: 22px;
+    }
+
+    .section { margin-top: 22px; }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 6px 12px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .section-count {
+      border-radius: 20px;
+      padding: 6px 11px;
+      background: #dfe3e9;
+      color: #566170;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .product-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 118px;
+      gap: 12px;
+      align-items: stretch;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 6px 22px rgba(27,39,51,.06);
+      padding: 15px;
+      overflow: hidden;
+    }
+
+    .product-info {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1.35;
+      margin: 1px 0 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .product-type {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #eceff3;
+      color: #56616e;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      margin-bottom: 11px;
+    }
+
+    .product-detail {
+      width: 100%;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .product-detail strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--text);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .product-detail .income { color: #394b40; }
+
+    .product-side {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .product-image {
+      display: block;
+      width: 100%;
+      height: 108px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #eceff3;
+    }
+
+    .image-placeholder {
+      height: 108px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #eceff3;
+      color: #8a929d;
+      font-size: 12px;
+      text-align: center;
+      padding: 5px;
+    }
+
+    .buy-button {
+      width: 100%;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 6px;
+      color: white;
+      background: linear-gradient(180deg, #4d5560 0%, #353d47 100%);
+      box-shadow: 0 6px 14px rgba(30,38,48,.22);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .buy-button:active:not(:disabled) { transform: scale(.97); }
+
+    .buy-button:disabled {
+      background: var(--disabled);
+      color: #717986;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 7px;
+      font-size: 10px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .notice {
+      display: none;
+      margin-bottom: 13px;
+      padding: 12px 13px;
+      border-radius: 12px;
+      background: #fff0f0;
+      color: #a52f2f;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .notice.show { display: block; }
+
+    .empty {
+      background: white;
+      border: 1px dashed #d4d9e0;
+      border-radius: 20px;
+      padding: 22px 14px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .loading {
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      z-index: 20;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 9px 8px calc(9px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 52px;
+      color: #a1a8b2;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .nav-item svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active { color: var(--dark); font-weight: 800; }
+    .nav-item.active svg { stroke-width: 2.3; }
+
+    @media (max-width: 360px) {
+      .product-card {
+        grid-template-columns: minmax(0, 1fr) 100px;
+        padding: 12px;
+      }
+      .product-image, .image-placeholder { height: 94px; }
+      .product-name { font-size: 14px; }
+      .product-detail { font-size: 11px; }
+      .buy-button { font-size: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="back" href="/dashboard" aria-label="Retour">‹</a>
+    <div class="page-title">Nos produits</div>
+  </header>
+
+  <main>
+    <div id="notice" class="notice" role="alert"></div>
+
+    <section class="stats">
+      <article class="stat">
+        <div class="stat-label">Produits achetés</div>
+        <div class="stat-bottom">
+          <div class="stat-value" id="purchasedCount">0</div>
+          <span class="stat-arrow" aria-hidden="true">↓</span>
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">Revenu reçu</div>
+        <div class="stat-bottom">
+          <div class="stat-value" id="incomeReceived">0</div>
+          <span class="stat-arrow" aria-hidden="true">↓</span>
+        </div>
+        <div class="stat-label">XOF</div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <h2>Produits Motor</h2>
+        <span class="section-count" id="motorCount">0 produit</span>
+      </div>
+      <div class="product-list" id="motorProducts">
+        <div class="loading">Chargement des produits…</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <h2>Produits Turbo</h2>
+        <span class="section-count" id="turboCount">0 produit</span>
+      </div>
+      <div class="product-list" id="turboProducts">
+        <div class="loading">Chargement des produits…</div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigation principale">
+    <a class="nav-item" href="/dashboard">
+      <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9M9 21v-7h6v7"/></svg>
+      <span>Accueil</span>
+    </a>
+    <a class="nav-item active" href="/produit" aria-current="page">
+      <svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>
+      <span>Produit</span>
+    </a>
+    <a class="nav-item" href="/equipe">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8M19 15a6 6 0 0 1 3 5"/></svg>
+      <span>Équipe</span>
+    </a>
+    <a class="nav-item" href="/moi">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      <span>Moi</span>
+    </a>
+  </nav>
+
+  <script>
+    "use strict";
+
+    const API_URL =
+      "https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api";
+
+    const SESSION_KEY = "jeep_session_token";
+    const $ = id => document.getElementById(id);
+
+    let products = [];
+    let purchaseInProgress = false;
+
+    function formatXOF(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "—";
+      return new Intl.NumberFormat("fr-FR", {
+        maximumFractionDigits: 0
+      }).format(n);
+    }
+
+    function showNotice(message) {
+      const box = $("notice");
+      box.textContent = message;
+      box.classList.add("show");
+    }
+
+    async function api(action, extra = {}) {
+      const token = sessionStorage.getItem(SESSION_KEY);
+
+      if (!token) {
+        window.location.replace("/connexion");
+        throw new Error("SESSION_MISSING");
+      }
+
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify({
+          action,
+          session_token: token,
+          ...extra
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 ||
+          data.error === "SESSION_INVALID") {
+        sessionStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem("jeep_user_id");
+        sessionStorage.removeItem("jeep_user_country");
+        sessionStorage.removeItem("jeep_user_role");
+        window.location.replace("/connexion");
+        throw new Error("SESSION_INVALID");
+      }
+
+      if (!response.ok || data.ok !== true) {
+        throw new Error(data.error || "REQUEST_FAILED");
+      }
+
+      return data;
+    }
+
+    function emptyMessage(message) {
+      const div = document.createElement("div");
+      div.className = "empty";
+      div.textContent = message;
+      return div;
+    }
+
+    function createProductCard(product) {
+      const card = document.createElement("article");
+      card.className = "product-card";
+
+      const info = document.createElement("div");
+      info.className = "product-info";
+
+      const name = document.createElement("div");
+      name.className = "product-name";
+      name.textContent = product.name || "Produit JEEP";
+
+      const type = document.createElement("span");
+      type.className = "product-type";
+      type.textContent =
+        product.product_type === "turbo" ? "TURBO" : "MOTOR";
+
+      info.append(name, type);
+
+      const details = [
+        ["Prix", formatXOF(product.price_xof) + " XOF"],
+        ["Durée", String(product.cycle_days ?? "—") + " jour(s)"]
+      ];
+
+      if (product.product_type === "motor") {
+        details.push([
+          "Revenu journalier",
+          formatXOF(product.daily_income_xof) + " XOF"
+        ]);
+      } else {
+        details.push([
+          "Revenu en fin de cycle",
+          formatXOF(product.total_income_xof) + " XOF"
+        ]);
+      }
+
+      details.forEach(([label, value]) => {
+        const detail = document.createElement("div");
+        detail.className = "product-detail";
+
+        const labelEl = document.createElement("span");
+        labelEl.textContent = label;
+
+        const valueEl = document.createElement("strong");
+        valueEl.textContent = value;
+
+        if (label.toLowerCase().includes("revenu")) {
+          valueEl.classList.add("income");
+        }
+
+        detail.append(labelEl, valueEl);
+        info.append(detail);
+      });
+
+      const side = document.createElement("div");
+      side.className = "product-side";
+
+      const imageUrl = product.image_url;
+      if (imageUrl) {
+        const image = document.createElement("img");
+        image.className = "product-image";
+        image.alt = product.name || "Image du produit";
+        image.loading = "lazy";
+        image.src = imageUrl;
+        image.onerror = () => {
+          const fallback = document.createElement("div");
+          fallback.className = "image-placeholder";
+          fallback.textContent = "Image indisponible";
+          image.replaceWith(fallback);
+        };
+        side.append(image);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "image-placeholder";
+        placeholder.textContent = "Image produit";
+        side.append(placeholder);
+      }
+
+      const isActive = product.is_active === true;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "buy-button";
+      button.disabled = !isActive;
+      button.textContent = isActive ? "Acheter" : "Indisponible";
+      button.setAttribute(
+        "aria-label",
+        isActive ? "Acheter " + (product.name || "ce produit")
+                 : "Produit indisponible"
+      );
+
+      button.addEventListener("click", () => buyProduct(product, button));
+
+      const status = document.createElement("div");
+      status.className = "status";
+      status.textContent = isActive ? "Disponible" : "Désactivé";
+
+      side.append(button, status);
+      card.append(info, side);
+
+      return card;
+    }
+
+    function renderSection(type, containerId, countId) {
+      const container = $(containerId);
+      container.replaceChildren();
+
+      const items = products.filter(p => p.product_type === type);
+      $(countId).textContent =
+        items.length + (items.length > 1 ? " produits" : " produit");
+
+      if (!items.length) {
+        container.append(
+          emptyMessage("Aucun produit " +
+            (type === "motor" ? "Motor" : "Turbo") +
+            " disponible pour le moment.")
+        );
+        return;
+      }
+
+      items.forEach(product => {
+        container.append(createProductCard(product));
+      });
+    }
+
+    function renderProducts() {
+      renderSection("motor", "motorProducts", "motorCount");
+      renderSection("turbo", "turboProducts", "turboCount");
+    }
+
+    function renderStats(transactions) {
+      if (!Array.isArray(transactions)) return;
+
+      // Les types sont vérifiés pour éviter de compter les recharges
+      // ou les retraits comme des achats ou des revenus.
+      const purchaseKinds = new Set([
+        "product_purchase",
+        "purchase_product",
+        "buy_product"
+      ]);
+
+      const incomeKinds = new Set([
+        "daily_income",
+        "product_income",
+        "investment_income",
+        "income"
+      ]);
+
+      const purchases = transactions.filter(t =>
+        purchaseKinds.has(String(t.kind || "").toLowerCase()) &&
+        ["approved", "completed", "success", "processed"].includes(
+          String(t.status || "").toLowerCase()
+        )
+      );
+
+      const incomes = transactions.filter(t =>
+        incomeKinds.has(String(t.kind || "").toLowerCase()) &&
+        ["approved", "completed", "success", "processed"].includes(
+          String(t.status || "").toLowerCase()
+        )
+      );
+
+      $("purchasedCount").textContent = formatXOF(purchases.length);
+      $("incomeReceived").textContent = formatXOF(
+        incomes.reduce((sum, t) => sum + Math.max(0, Number(t.amount_xof) || 0), 0)
+      );
+    }
+
+    async function buyProduct(product, button) {
+      if (purchaseInProgress || button.disabled) return;
+
+      if (product.is_active !== true) {
+        showNotice("Ce produit est actuellement désactivé.");
+        return;
+      }
+
+      const confirmed = window.confirm(
+        "Confirmer l'achat de « " + product.name + " » au prix de " +
+        formatXOF(product.price_xof) + " XOF ?"
+      );
+
+      if (!confirmed) return;
+
+      purchaseInProgress = true;
+      button.disabled = true;
+      button.textContent = "Traitement…";
+
+      try {
+        // Vérifier le statut le plus récent avant l'achat.
+        const latest = await api("products");
+        const current = (latest.products || []).find(
+          p => p.id === product.id
+        );
+
+        if (!current || current.is_active !== true) {
+          showNotice("Ce produit n'est plus disponible. Actualise la page.");
+          await loadProducts();
+          return;
+        }
+
+        const result = await api("buy_product", {
+          product_id: product.id
+        });
+
+        showNotice(
+          result.message ||
+          "Demande d'achat envoyée. Consulte ton compte pour vérifier son statut."
+        );
+
+        await Promise.allSettled([loadProducts(), loadStats()]);
+      } catch (error) {
+        if (error?.message === "SESSION_INVALID" ||
+            error?.message === "SESSION_MISSING") return;
+
+        showNotice(error.message === "INSUFFICIENT_BALANCE"
+          ? "Ton solde est insuffisant pour acheter ce produit."
+          : error.message === "PRODUCT_UNAVAILABLE"
+            ? "Ce produit n'est plus disponible."
+            : "L'achat n'a pas abouti. Vérifie ton solde et réessaie.");
+      } finally {
+        purchaseInProgress = false;
+        await loadProducts();
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const data = await api("products");
+        products = Array.isArray(data.products) ? data.products : [];
+        renderProducts();
+      } catch (error) {
+        if (error?.message === "SESSION_INVALID" ||
+            error?.message === "SESSION_MISSING") return;
+
+        $("motorProducts").replaceChildren(
+          emptyMessage("Impossible de charger les produits. Réessaie plus tard.")
+        );
+        $("turboProducts").replaceChildren(
+          emptyMessage("Impossible de charger les produits. Réessaie plus tard.")
+        );
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const data = await api("transactions");
+        renderStats(data.transactions || []);
+      } catch (error) {
+        if (error?.message !== "SESSION_INVALID" &&
+            error?.message !== "SESSION_MISSING") {
+          $("purchasedCount").textContent = "—";
+          $("incomeReceived").textContent = "—";
+        }
+      }
+    }
+
+    async function init() {
+      if (!sessionStorage.getItem(SESSION_KEY)) {
+        window.location.replace("/connexion");
+        return;
+      }
+
+      await Promise.allSettled([loadProducts(), loadStats()]);
+    }
+
+    init();
+  </script>
+</body>
+</html>
