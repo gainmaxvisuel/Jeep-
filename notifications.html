@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4a515a">
+  <title>Notifications | JEEP</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#eceef2;
+      --white:#fff;
+      --ink:#252b34;
+      --muted:#818895;
+      --line:#e7e9ed;
+      --dark:#303741;
+      --shadow:0 6px 22px rgba(27,39,51,.06);
+    }
+    body{
+      margin:0;background:var(--bg);color:var(--ink);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      padding-bottom:calc(24px + env(safe-area-inset-bottom));
+    }
+
+    .topbar{
+      position:sticky;top:0;z-index:10;height:68px;
+      display:flex;align-items:center;gap:12px;padding:0 16px;color:#fff;
+      background:linear-gradient(165deg,#4d555f 0%,#2e353e 100%);
+      box-shadow:0 4px 16px rgba(27,39,51,.18);
+    }
+    .back{
+      width:40px;height:40px;border-radius:50%;
+      background:rgba(255,255,255,.16);display:grid;
+      place-items:center;text-decoration:none;color:#fff;
+      font-size:26px;line-height:1;flex-shrink:0;
+    }
+    h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.2px}
+
+    .page{max-width:520px;margin:auto;padding:14px 12px}
+
+    .tools{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;margin:4px 6px 14px;
+    }
+    .count{font-size:13px;color:var(--muted);font-weight:600}
+    .refresh{
+      border:0;background:#dfe3e9;border-radius:999px;
+      padding:10px 15px;font-size:12px;font-weight:800;color:#3a424c;
+      cursor:pointer;
+    }
+    .refresh:disabled{opacity:.6}
+
+    .notice{
+      display:none;padding:13px;border-radius:14px;
+      background:#fff0ef;color:#a52d2d;font-size:13px;
+      line-height:1.5;margin-bottom:12px;
+    }
+    .notice.show{display:block}
+
+    .empty{
+      background:#fff;border-radius:24px;box-shadow:var(--shadow);
+      padding:40px 20px;text-align:center;margin-top:12px;
+    }
+    .empty-icon{
+      width:68px;height:68px;margin:0 auto 16px;border-radius:50%;
+      background:#eceff3;display:grid;place-items:center;
+      color:#566170;font-size:28px;font-weight:800;
+    }
+    .empty-icon svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .empty h2{font-size:17px;margin:0 0 8px}
+    .empty p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+
+    .list{display:flex;flex-direction:column;gap:12px}
+    .item{
+      display:flex;gap:13px;background:#fff;
+      border-radius:22px;padding:16px;box-shadow:var(--shadow);
+    }
+    .item.unread{box-shadow:var(--shadow),inset 4px 0 0 var(--dark)}
+    .item-icon{
+      width:44px;height:44px;border-radius:15px;background:#eceff3;
+      display:grid;place-items:center;flex-shrink:0;color:#566170;
+    }
+    .item-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .item-body{flex:1;min-width:0}
+    .item-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+    .item-title{font-size:15px;font-weight:800;line-height:1.4}
+    .dot{width:9px;height:9px;border-radius:50%;background:#d84b4b;flex-shrink:0;margin-top:5px}
+    .item-message{font-size:13px;color:#626a76;line-height:1.6;margin-top:7px;overflow-wrap:anywhere}
+    .item-date{font-size:11px;color:#9298a2;margin-top:10px}
+
+    .loading,.error{text-align:center;padding:28px 12px;color:var(--muted);font-size:13px}
+    .retry{
+      margin-top:14px;padding:12px 22px;color:white;border:0;
+      border-radius:999px;font-weight:800;cursor:pointer;
+      background:linear-gradient(180deg,#4d5560 0%,#353d47 100%);
+      box-shadow:0 6px 14px rgba(30,38,48,.22);
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="/dashboard" aria-label="Retour au tableau de bord">‹</a>
+    <h1>Notifications</h1>
+  </header>
+
+  <main class="page">
+    <div id="notice" class="notice" role="status"></div>
+
+    <div class="tools">
+      <span id="count" class="count">Chargement des notifications…</span>
+      <button class="refresh" id="refreshBtn" type="button">↻ Actualiser</button>
+    </div>
+
+    <section id="content">
+      <div class="loading">Chargement en cours…</div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  const API = "https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api";
+  const token = sessionStorage.getItem("jeep_session_token");
+  const $ = id => document.getElementById(id);
+
+  const ICONS = {
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    out:'<path d="M7 17 17 7M8 7h9v9"/>',
+    gift:'<rect x="3" y="10" width="18" height="11" rx="1"/><path d="M2 7h20v4H2zM12 7v14"/><path d="M12 7H7a2 2 0 1 1 2-2c0 2 3 2 3 2Zm0 0h5a2 2 0 1 0-2-2c0 2-3 2-3 2Z"/>',
+    team:'<circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8M19 15a6 6 0 0 1 3 5"/>',
+    product:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
+    lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>'
+  };
+
+  const svg = name =>
+    '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[name] + "</svg>";
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[c]);
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("fr-FR", {
+      day:"2-digit",month:"short",year:"numeric",
+      hour:"2-digit",minute:"2-digit"
+    }).format(date);
+  }
+
+  function iconFor(category) {
+    const c = String(category || "").toLowerCase();
+    if (/deposit|recharge/.test(c)) return svg("plus");
+    if (/withdraw|retrait/.test(c)) return svg("out");
+    if (/gift|cadeau|reward/.test(c)) return svg("gift");
+    if (/team|referral|equipe/.test(c)) return svg("team");
+    if (/product|achat/.test(c)) return svg("product");
+    if (/security|password|securite/.test(c)) return svg("lock");
+    return svg("bell");
+  }
+
+  async function api(action, extra = {}) {
+    const response = await fetch(API, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action,session_token:token,...extra})
+    });
+    let data;
+    try { data = await response.json(); }
+    catch { throw new Error("Réponse invalide du serveur."); }
+
+    if (!response.ok || data.error) {
+      const error = new Error(data.error || "Impossible de charger les notifications.");
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+
+  function logout() {
+    sessionStorage.removeItem("jeep_session_token");
+    sessionStorage.removeItem("jeep_user_id");
+    sessionStorage.removeItem("jeep_user_country");
+    sessionStorage.removeItem("jeep_user_role");
+    location.replace("/connexion");
+  }
+
+  async function loadNotifications() {
+    $("refreshBtn").disabled = true;
+    $("count").textContent = "Chargement…";
+    $("content").innerHTML = '<div class="loading">Chargement en cours…</div>';
+    $("notice").classList.remove("show");
+
+    if (!token) {
+      logout();
+      return;
+    }
+
+    try {
+      const result = await api("notifications");
+      const notifications = Array.isArray(result.notifications)
+        ? result.notifications : [];
+
+      $("count").textContent =
+        notifications.length + (notifications.length > 1 ? " notifications" : " notification");
+
+      if (!notifications.length) {
+        $("content").innerHTML = `
+          <div class="empty">
+            <div class="empty-icon">${svg("bell")}</div>
+            <h2>Aucune notification</h2>
+            <p>Vous n’avez pas encore reçu de notification. Les informations importantes de votre compte apparaîtront ici.</p>
+          </div>`;
+        return;
+      }
+
+      $("content").innerHTML = '<div class="list">' + notifications.map(n => {
+        const unread = !n.read_at;
+        return `
+          <article class="item ${unread ? "unread" : ""}">
+            <div class="item-icon">${iconFor(n.category)}</div>
+            <div class="item-body">
+              <div class="item-top">
+                <div class="item-title">${escapeHTML(n.title || "Notification JEEP")}</div>
+                ${unread ? '<span class="dot" aria-label="Non lue"></span>' : ""}
+              </div>
+              <div class="item-message">${escapeHTML(n.message || "")}</div>
+              <div class="item-date">${escapeHTML(formatDate(n.created_at))}</div>
+            </div>
+          </article>`;
+      }).join("") + "</div>";
+
+    } catch (error) {
+      if (error.status === 401 || /SESSION_INVALID/i.test(error.message)) {
+        logout();
+        return;
+      }
+      $("count").textContent = "Chargement impossible";
+      $("content").innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">!</div>
+          <h2>Impossible de charger les notifications</h2>
+          <p>Vérifiez votre connexion puis réessayez.</p>
+          <button class="retry" id="retryBtn" type="button">Réessayer</button>
+        </div>`;
+      $("retryBtn").addEventListener("click", loadNotifications);
+    } finally {
+      $("refreshBtn").disabled = false;
+    }
+  }
+
+  $("refreshBtn").addEventListener("click", loadNotifications);
+  loadNotifications();
+})();
+</script>
+</body>
+</html>
