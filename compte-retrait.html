@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#4a515a">
+<title>Compte de retrait | JEEP</title>
+<style>
+:root{--bg:#eceef2;--ink:#252a30;--muted:#89909a;--line:#d5dae0;--dark:#343b43;--red:#c84b55;--green:#18885b;--shadow:0 6px 22px rgba(27,39,51,.06)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;color:var(--ink);background:var(--bg)}
+body{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+
+.top{position:sticky;top:0;z-index:2;height:68px;display:flex;align-items:center;gap:12px;padding:0 16px;color:#fff;background:linear-gradient(165deg,#4d555f 0%,#2e353e 100%);box-shadow:0 4px 16px rgba(27,39,51,.18)}
+.back{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:26px;line-height:1;cursor:pointer;flex-shrink:0}
+.top h1{font-size:19px;font-weight:800;letter-spacing:-.2px;margin:0}
+
+.wrap{max-width:680px;margin:16px auto;padding:0 12px}
+.panel{background:#fff;border-radius:24px;padding:22px 18px;box-shadow:var(--shadow)}
+.field{margin-bottom:22px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:10px}
+.req{color:var(--red);font-weight:700}
+
+input,select{width:100%;height:58px;border:1px solid var(--line);border-radius:14px;background:#f6f7f9;padding:0 16px;font:inherit;font-size:16px;color:#353b43;outline:none}
+input::placeholder{color:#9aa0a9}
+input:focus,select:focus{border-color:#596674;background:#fff;box-shadow:0 0 0 3px rgba(89,102,116,.18)}
+
+.phonebox{display:flex;align-items:center;border:1px solid var(--line);border-radius:14px;background:#f6f7f9;padding-left:16px}
+.phonebox:focus-within{border-color:#596674;background:#fff;box-shadow:0 0 0 3px rgba(89,102,116,.18)}
+.phonebox strong{font-size:16px;white-space:nowrap}
+.phonebox input{border:0;background:transparent;box-shadow:none;padding-left:12px;min-width:0}
+.phonebox input:focus{box-shadow:none;background:transparent}
+
+.btn{border:0;border-radius:999px;min-height:58px;padding:14px 20px;font:inherit;font-size:17px;font-weight:800;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:wait}
+.primary{background:linear-gradient(180deg,#4d5560 0%,#353d47 100%);color:#fff;box-shadow:0 10px 20px rgba(30,38,48,.25)}
+.mainbtn{display:block;width:100%;margin:30px auto 0}
+.hint{text-align:center;color:var(--muted);font-size:13px;line-height:1.65;margin:22px 12px}
+.status{font-size:14px;margin:14px 0 0;text-align:center}
+.error{color:#bd343d}
+.success{color:var(--green)}
+.hidden{display:none!important}
+
+.account-card{border-radius:24px;padding:24px 20px;display:flex;align-items:center;gap:20px;color:#fff;background:radial-gradient(90% 70% at 100% 0%,rgba(255,255,255,.12),transparent 65%),linear-gradient(160deg,#4b535d 0%,#323a44 100%);box-shadow:0 8px 22px rgba(27,39,51,.18)}
+.wallet-icon{width:62px;min-width:62px;height:50px;display:grid;place-items:center;color:#fff}
+.wallet-icon svg{width:58px;height:44px}
+.acc-info{min-width:0}
+.operator{font-weight:800;font-size:18px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.3px}
+.recipient,.phone{font-size:15px;color:rgba(255,255,255,.78);margin-top:7px;overflow-wrap:anywhere}
+.verify{display:inline-block;font-size:12px;font-weight:700;color:#0f6a47;background:#d7f3e5;border-radius:30px;padding:5px 10px;margin-top:12px}
+
+.delete{display:block;width:100%;margin-top:24px;background:#fff;color:#c74650;border:1px solid #efcbd0;min-height:56px}
+.replace{display:block;width:100%;margin:12px auto 0;background:#dfe3e9;color:#343b43;min-height:56px}
+.notice{background:#fff8e7;color:#75591b;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;margin-bottom:18px}
+.loading{text-align:center;color:var(--muted);padding:34px 8px}
+@media(min-width:600px){.wrap{padding:0 20px}.panel{padding:26px 28px}}
+</style></head>
+<body>
+<header class="top"><button class="back" aria-label="Retour" onclick="history.length>1?history.back():location.href='/moi'">‹</button><h1 id="pageTitle">Lier un compte de retrait</h1></header>
+<main class="wrap"><div id="loading" class="loading">Chargement de votre compte…</div>
+<section id="emptyView" class="hidden"><form id="accountForm" class="panel" autocomplete="on">
+<div class="field"><label for="operator"><span class="req">*</span> Sélectionnez le moyen de retrait</label><select id="operator" required><option value="">Veuillez sélectionner</option><option>Orange Money</option><option>Moov Money</option><option>Wave</option><option>MTN</option></select></div>
+<div class="field"><label for="recipient"><span class="req">*</span> Nom du titulaire</label><input id="recipient" name="name" maxlength="100" placeholder="Veuillez saisir le nom du titulaire" required></div>
+<div class="field" style="margin-bottom:0"><label for="phone"><span class="req">*</span> Numéro du compte</label><div class="phonebox"><strong id="prefix">+226</strong><input id="phone" name="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Veuillez saisir le numéro" maxlength="15" required></div></div>
+<div class="field" style="margin-top:22px;margin-bottom:0"><label for="txpass"><span class="req">*</span> Mot de passe de transaction</label><input id="txpass" type="password" minlength="8" maxlength="128" autocomplete="new-password" placeholder="Mot de passe de transaction" required></div>
+<button class="btn primary mainbtn" id="saveBtn" type="submit">Ajouter</button><p id="formStatus" class="status" role="status"></p></form>
+<p class="hint">Vérifiez soigneusement vos informations. Votre compte de retrait sera utilisé pour recevoir vos retraits. Vous ne pouvez enregistrer qu’un seul compte à la fois.</p></section>
+<section id="savedView" class="hidden"><div class="account-card"><div class="wallet-icon" aria-hidden="true"><svg viewBox="0 0 64 48" fill="none"><rect x="1" y="5" width="62" height="40" rx="6" fill="currentColor"/><path d="M1 13h62" stroke="#3a424c" stroke-width="6"/><path d="M49 29c4 2 4 7 0 9m5-12c6 4 6 11 0 15" stroke="#3a424c" stroke-width="2.5" stroke-linecap="round"/></svg></div><div class="acc-info"><div class="operator" id="savedOperator">ORANGE MONEY</div><div class="recipient" id="savedName">Titulaire</div><div class="phone" id="savedPhone">Numéro</div><span id="verifiedBadge" class="verify hidden">Compte vérifié</span></div></div><p class="hint">Ce compte recevra vos retraits. Vous pouvez le remplacer si nécessaire.</p><button id="deleteBtn" class="btn delete">Supprimer ce compte</button><button id="replaceBtn" class="btn replace">Remplacer ce compte</button><p id="savedStatus" class="status" role="status"></p></section>
+</main>
+<script>
+(()=>{
+'use strict';
+const API_URL='https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api';
+const $=id=>document.getElementById(id);let account=null;const token=sessionStorage.getItem('jeep_session_token');
+const prefixes={BF:'+226',BJ:'+229',TG:'+228',CI:'+225'};
+$('prefix').textContent=prefixes[sessionStorage.getItem('jeep_user_country')]||'+226';
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function api(action,payload={}){if(!token){sessionStorage.removeItem('jeep_session_token');location.href='/connexion';throw new Error('SESSION_REQUIRED')}const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({action,...payload})});let data={};try{data=await res.json()}catch{}if(res.status===401||data.error==='INVALID_SESSION'){['jeep_session_token','jeep_user_id','jeep_user_country','jeep_user_role'].forEach(k=>sessionStorage.removeItem(k));location.href='/connexion';throw new Error('SESSION_REQUIRED')}if(!res.ok||data.error)throw new Error(data.error||'REQUEST_FAILED');return data}
+function msg(el,text,kind='error'){el.textContent=text;el.className='status '+kind}
+function friendly(err){const map={INVALID_PHONE_LENGTH:'Le numéro de téléphone ne correspond pas au pays de votre compte.',INVALID_RECIPIENT_NAME:'Veuillez saisir le nom complet du titulaire.',INVALID_OPERATOR:'Veuillez choisir un moyen de retrait valide.',TRANSACTION_PASSWORD_MIN_8_MAX_128:'Le mot de passe de transaction doit contenir entre 8 et 128 caractères.',PAYOUT_ACCOUNT_SAVE_FAILED:'Impossible d’enregistrer ce compte pour le moment.',PAYOUT_ACCOUNT_DELETE_FAILED:'Impossible de supprimer le compte pour le moment.',PAYOUT_ACCOUNT_UNAVAILABLE:'Impossible de charger le compte de retrait.'};return map[err]||'Une erreur est survenue. Vérifiez votre connexion et réessayez.'}
+function showEmpty(){ $('loading').classList.add('hidden');$('savedView').classList.add('hidden');$('emptyView').classList.remove('hidden');$('pageTitle').textContent=account?'Remplacer le compte de retrait':'Lier un compte de retrait';$('saveBtn').textContent=account?'Enregistrer le remplacement':'Ajouter';$('txpass').value='';}
+function showSaved(a){account=a;$('loading').classList.add('hidden');$('emptyView').classList.add('hidden');$('savedView').classList.remove('hidden');$('pageTitle').textContent='Liste des comptes de retrait';$('savedOperator').textContent=String(a.operator||'').toUpperCase();$('savedName').textContent=a.recipient_name||'Titulaire';$('savedPhone').textContent=a.recipient_phone||'';$('verifiedBadge').classList.toggle('hidden',!a.is_verified);}
+async function load(){try{const d=await api('get_withdrawal_account');if(d.account)showSaved(d.account);else{account=null;showEmpty()}}catch(e){$('loading').textContent=friendly(e.message);$('loading').classList.remove('hidden')}}
+$('accountForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('saveBtn');btn.disabled=true;btn.textContent='Enregistrement…';msg($('formStatus'),'');try{const data=await api('save_withdrawal_account',{operator:$('operator').value,recipient_name:$('recipient').value.trim(),recipient_phone:$('phone').value.replace(/\s+/g,''),transaction_password:$('txpass').value});$('accountForm').reset();showSaved(data.account);msg($('savedStatus'),'Compte de retrait enregistré.','success')}catch(err){msg($('formStatus'),friendly(err.message))}finally{btn.disabled=false;btn.textContent=account?'Enregistrer le remplacement':'Ajouter'}});
+$('replaceBtn').addEventListener('click',()=>{showEmpty();$('operator').value=account?.operator||'';$('recipient').value=account?.recipient_name||'';$('phone').value=account?.recipient_phone||'';msg($('formStatus'),'Saisissez les informations à remplacer et confirmez avec votre mot de passe de transaction.','')});
+$('deleteBtn').addEventListener('click',async()=>{if(!confirm('Voulez-vous vraiment supprimer ce compte de retrait ? Vous devrez en enregistrer un nouveau pour effectuer un retrait.'))return;const btn=$('deleteBtn');btn.disabled=true;btn.textContent='Suppression…';try{await api('delete_withdrawal_account');account=null;showEmpty();msg($('formStatus'),'Compte supprimé. Vous pouvez en ajouter un nouveau.','success')}catch(e){msg($('savedStatus'),friendly(e.message))}finally{btn.disabled=false;btn.textContent='Supprimer ce compte'}});
+$('phone').addEventListener('input',e=>{e.target.value=e.target.value.replace(/[^0-9]/g,'')});load();
+})();
+</script></body></html>
