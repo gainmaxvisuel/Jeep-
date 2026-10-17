@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4a515a">
+  <title>Historique | JEEP</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{--shadow:0 6px 22px rgba(27,39,51,.06);--dark:#303741}
+    body{margin:0;background:#eceef2;color:#20242a;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+
+    .top{position:sticky;top:0;z-index:6;height:68px;display:flex;align-items:center;gap:12px;padding:0 16px;color:#fff;background:linear-gradient(165deg,#4d555f 0%,#2e353e 100%);box-shadow:0 4px 16px rgba(27,39,51,.18)}
+    .back{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:26px;line-height:1;cursor:pointer;flex-shrink:0}
+    .top h1{margin:0;font-size:19px;font-weight:800;letter-spacing:-.2px}
+
+    .page{max-width:650px;margin:auto;padding:14px 12px calc(100px + env(safe-area-inset-bottom))}
+    .brand{display:flex;align-items:center;justify-content:center;height:64px;margin:4px auto 12px}
+    .brand img{max-width:170px;max-height:60px;object-fit:contain}
+    .brand-fallback{font-weight:900;font-size:26px;letter-spacing:3px;color:#343b43}
+
+    .summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px;border-radius:24px;color:#fff;background:radial-gradient(90% 70% at 100% 0%,rgba(255,255,255,.12),transparent 65%),linear-gradient(160deg,#4b535d 0%,#323a44 100%);box-shadow:0 8px 22px rgba(27,39,51,.18);margin-bottom:14px}
+    .summary-label{font-size:13px;color:#d4d6da}
+    .summary-value{font-size:34px;font-weight:800;margin-top:6px;letter-spacing:-.5px}
+    .refresh{border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;padding:12px 16px;font-size:13px;font-weight:800;cursor:pointer;flex-shrink:0}
+    .refresh:disabled{opacity:.6}
+
+    .filters{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:none}
+    .filters::-webkit-scrollbar{display:none}
+    .filter{border:0;background:#dfe3e9;color:#566170;border-radius:999px;padding:12px 17px;white-space:nowrap;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+    .filter.active{background:linear-gradient(180deg,#4d5560 0%,#353d47 100%);color:#fff;box-shadow:0 6px 14px rgba(30,38,48,.22)}
+
+    .list{display:flex;flex-direction:column;gap:12px}
+    .item{background:#fff;border-radius:22px;padding:16px;box-shadow:var(--shadow)}
+    .item-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .item-title{font-size:15px;font-weight:800}
+    .item-date{font-size:12px;color:#858b95;margin-top:6px}
+    .amount-box{text-align:right}
+    .amount{font-weight:800;font-size:16px;white-space:nowrap}
+    .amount.plus{color:#16834a}
+    .amount.minus{color:#303741}
+    .status{display:inline-block;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;margin-top:9px;background:#eceff3;color:#566170}
+    .status.success{background:#e4f5e9;color:#18763b}
+    .status.pending{background:#fff2d5;color:#8b5b00}
+    .status.failed{background:#fde8e8;color:#b42318}
+    .reference{font-size:11px;color:#858b95;margin-top:10px;overflow-wrap:anywhere}
+    .item .reference:first-of-type{padding-top:10px;border-top:1px solid #f0f1f3}
+
+    .empty,.message{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:26px 16px;text-align:center;color:#777f8a;font-size:14px}
+    .message.error{color:#b42318;background:#fff0ef;box-shadow:none;margin-bottom:12px}
+    .hidden{display:none}
+
+    .bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e8eaee;display:grid;grid-template-columns:repeat(4,1fr);padding:9px 8px calc(9px + env(safe-area-inset-bottom));z-index:5}
+    .bottom a{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-decoration:none;color:#a1a8b2;font-size:12px;font-weight:650}
+    .bottom svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <button class="back" id="backBtn" type="button" aria-label="Retour">‹</button>
+    <h1>Mon historique</h1>
+  </header>
+
+  <main class="page">
+    <div class="brand">
+      <img id="logo" alt="JEEP" hidden>
+      <div id="brandFallback" class="brand-fallback">JEEP</div>
+    </div>
+
+    <section class="summary">
+      <div>
+        <div class="summary-label">Nombre d'opérations affichées</div>
+        <div class="summary-value" id="total">—</div>
+      </div>
+      <button class="refresh" id="refresh" type="button">↻ Actualiser</button>
+    </section>
+
+    <div class="filters" role="group" aria-label="Filtrer les opérations">
+      <button class="filter active" data-filter="all">Tout</button>
+      <button class="filter" data-filter="deposit">Recharges</button>
+      <button class="filter" data-filter="withdrawal">Retraits</button>
+      <button class="filter" data-filter="other">Autres opérations</button>
+    </div>
+
+    <div id="notice" class="message hidden"></div>
+    <div id="history" class="list"></div>
+  </main>
+
+  <nav class="bottom" aria-label="Navigation principale">
+    <a href="/dashboard"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9M9 21v-7h6v7"/></svg>Accueil</a>
+    <a href="/produit"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>Produit</a>
+    <a href="/equipe"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8M19 15a6 6 0 0 1 3 5"/></svg>Équipe</a>
+    <a href="/moi"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Moi</a>
+  </nav>
+
+<script>
+(() => {
+  "use strict";
+
+  const API =
+    "https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api";
+
+  const token = sessionStorage.getItem("jeep_session_token");
+  const historyBox = document.getElementById("history");
+  const notice = document.getElementById("notice");
+  const total = document.getElementById("total");
+
+  let transactions = [];
+  let activeFilter = "all";
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    if (history.length > 1) history.back();
+    else location.href = "/dashboard";
+  });
+
+  if (!token) {
+    showError("Ta session a expiré. Connecte-toi pour consulter ton historique.");
+    setTimeout(() => location.href = "/connexion", 1600);
+    return;
+  }
+
+  async function api(action, extra = {}) {
+    const response = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action,
+        session_token: token,
+        ...extra
+      })
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error("Réponse du serveur invalide.");
+    }
+
+    if (!response.ok || data.error) {
+      const err = new Error(data.error || "REQUEST_FAILED");
+      err.status = response.status;
+      throw err;
+    }
+    return data;
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function money(value) {
+    const amount = Number(value || 0);
+    return amount.toLocaleString("fr-FR") + " FCFA";
+  }
+
+  function dateText(value) {
+    if (!value) return "Date non disponible";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Date non disponible";
+    return date.toLocaleString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  const titles = {
+    deposit: "Recharge",
+    withdrawal: "Retrait",
+    signup_bonus: "Bonus d'inscription",
+    product_purchase: "Achat de produit",
+    motor_income: "Revenu Motor",
+    turbo_income: "Revenu Turbo",
+    referral_commission: "Commission de parrainage",
+    daily_checkin: "Pointage quotidien",
+    gift_code: "Code cadeau",
+    mission_reward: "Récompense de mission",
+    weekly_leaderboard_reward: "Récompense hebdomadaire",
+    withdrawal_refund: "Remboursement de retrait",
+    admin_adjustment: "Ajustement du solde"
+  };
+
+  const statusLabels = {
+    pending: "En attente",
+    success: "Validée",
+    failed: "Rejetée"
+  };
+
+  function category(kind) {
+    if (kind === "deposit") return "deposit";
+    if (kind === "withdrawal" || kind === "withdrawal_refund") {
+      return "withdrawal";
+    }
+    return "other";
+  }
+
+  function showError(message) {
+    notice.textContent = message;
+    notice.className = "message error";
+  }
+
+  function render() {
+    const filtered = transactions.filter(tx =>
+      activeFilter === "all" || category(tx.kind) === activeFilter
+    );
+
+    total.textContent = String(filtered.length);
+
+    if (!filtered.length) {
+      historyBox.innerHTML =
+        '<div class="empty">Aucune opération dans cette catégorie.</div>';
+      return;
+    }
+
+    historyBox.innerHTML = filtered.map(tx => {
+      const title = titles[tx.kind] || "Autre opération";
+      const status = statusLabels[tx.status] || tx.status || "Inconnu";
+      const statusClass = ["success", "pending", "failed"].includes(tx.status)
+        ? tx.status : "";
+
+      const amount = Number(tx.amount_xof || 0);
+      const negative = tx.kind === "product_purchase" || tx.kind === "withdrawal";
+      const sign = negative ? "−" : "+";
+
+      return `
+        <article class="item">
+          <div class="item-top">
+            <div>
+              <div class="item-title">${escapeHTML(title)}</div>
+              <div class="item-date">${escapeHTML(dateText(tx.created_at))}</div>
+            </div>
+            <div class="amount-box">
+              <div class="amount ${negative ? "minus" : "plus"}">${sign}${escapeHTML(money(amount))}</div>
+              <span class="status ${statusClass}">
+                ${escapeHTML(status)}
+              </span>
+            </div>
+          </div>
+          ${tx.fee_xof ? `<div class="reference">Frais : ${escapeHTML(money(tx.fee_xof))}</div>` : ""}
+          ${tx.net_amount_xof != null && tx.kind === "withdrawal"
+            ? `<div class="reference">Montant net : ${escapeHTML(money(tx.net_amount_xof))}</div>`
+            : ""}
+          ${tx.operator
+            ? `<div class="reference">Opérateur : ${escapeHTML(tx.operator)}</div>`
+            : ""}
+          <div class="reference">
+            Référence : ${escapeHTML(tx.reference_code || "Non disponible")}
+          </div>
+          ${tx.description
+            ? `<div class="reference">${escapeHTML(tx.description)}</div>`
+            : ""}
+        </article>
+      `;
+    }).join("");
+  }
+
+  async function loadHistory() {
+    historyBox.innerHTML = '<div class="message">Chargement de ton historique…</div>';
+    notice.className = "message hidden";
+
+    try {
+      const result = await api("transactions");
+      transactions = Array.isArray(result.transactions)
+        ? result.transactions : [];
+      render();
+    } catch (error) {
+      if (error.status === 401 || error.message === "SESSION_INVALID") {
+        sessionStorage.removeItem("jeep_session_token");
+        showError("Session expirée. Reconnecte-toi.");
+        setTimeout(() => location.href = "/connexion", 1600);
+        return;
+      }
+      showError("Impossible de charger l'historique. Vérifie ta connexion puis réessaie.");
+      historyBox.innerHTML = "";
+      total.textContent = "—";
+    }
+  }
+
+  document.querySelectorAll("[data-filter]").forEach(button => {
+    button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach(b =>
+        b.classList.toggle("active", b === button)
+      );
+      render();
+    });
+  });
+
+  document.getElementById("refresh").addEventListener("click", loadHistory);
+
+  api("branding").then(result => {
+    if (result.logo_url) {
+      const logo = document.getElementById("logo");
+      logo.src = result.logo_url;
+      logo.hidden = false;
+      document.getElementById("brandFallback").hidden = true;
+    }
+  }).catch(() => {});
+
+  loadHistory();
+})();
+</script>
+</body>
+</html>
