@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4a515a">
+  <title>Modifier le mot de passe | JEEP</title>
+  <style>
+    :root{--bg:#eceef2;--card:#fff;--ink:#20252b;--muted:#68717d;--line:#d5dae0;--accent:#303943;--danger:#b42318;--success:#167647;--shadow:0 6px 22px rgba(27,39,51,.06)}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;background:var(--bg);color:var(--ink)}
+    body{padding-bottom:calc(32px + env(safe-area-inset-bottom))}
+
+    .top{position:sticky;top:0;z-index:5;height:68px;display:flex;align-items:center;gap:12px;padding:0 16px;color:#fff;background:linear-gradient(165deg,#4d555f 0%,#2e353e 100%);box-shadow:0 4px 16px rgba(27,39,51,.18)}
+    .back{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:26px;line-height:1;cursor:pointer;flex-shrink:0}
+    .top h1{margin:0;font-size:19px;font-weight:800;letter-spacing:-.2px}
+
+    .wrap{width:100%;max-width:470px;margin:0 auto;padding:14px 12px}
+    .brand{display:flex;align-items:center;justify-content:center;height:64px;margin:4px auto 12px}
+    .logo{max-width:170px;max-height:60px;object-fit:contain;display:none}
+    .brand-fallback{font-weight:900;font-size:26px;letter-spacing:3px;color:#343b43}
+
+    .card{background:var(--card);border-radius:24px;padding:22px 18px;box-shadow:var(--shadow)}
+    .notice{background:#eef1f4;border-radius:16px;padding:13px 14px;font-size:13px;line-height:1.55;color:#525b66;margin-bottom:20px}
+
+    .field{margin:0 0 18px}
+    .field label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
+    .input-wrap{position:relative}
+    .field input{width:100%;height:56px;border:1px solid var(--line);border-radius:16px;padding:0 72px 0 15px;background:#f6f7f9;font:inherit;font-size:16px;outline:none}
+    .field input:focus{border-color:#596674;background:#fff;box-shadow:0 0 0 3px rgba(89,102,116,.18)}
+    .toggle{position:absolute;right:8px;top:9px;height:38px;padding:0 12px;border:0;border-radius:999px;background:#e4e8ed;color:#525b66;font-size:12px;font-weight:700;cursor:pointer}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+
+    .btn{width:100%;height:60px;border:0;border-radius:999px;background:linear-gradient(180deg,#4d5560 0%,#353d47 100%);color:#fff;font-size:17px;font-weight:800;margin-top:6px;cursor:pointer;box-shadow:0 10px 20px rgba(30,38,48,.25)}
+    .btn:disabled{opacity:.6;cursor:wait}
+
+    .message{display:none;margin:0 0 16px;padding:12px 13px;border-radius:14px;font-size:13px;line-height:1.5}
+    .message.error{display:block;background:#fff1f0;color:var(--danger);border:1px solid #ffd8d4}
+    .message.ok{display:block;background:#ecfdf3;color:var(--success);border:1px solid #abefc6}
+
+    .security{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:12px;line-height:1.55;margin-top:20px}
+    .security svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:#3a424c;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .footer{text-align:center;color:#89919b;font-size:11px;margin-top:18px}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <button class="back" id="backBtn" type="button" aria-label="Retour">‹</button>
+    <h1>Modifier le mot de passe</h1>
+  </header>
+
+  <main class="wrap">
+    <div class="brand">
+      <img class="logo" id="logo" alt="Logo JEEP">
+      <div id="brandFallback" class="brand-fallback">JEEP</div>
+    </div>
+
+    <section class="card">
+      <div class="notice">Saisissez d’abord votre mot de passe actuel, puis choisissez un nouveau mot de passe. La modification sera vérifiée par le serveur.</div>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <form id="passwordForm" autocomplete="off">
+        <div class="field"><label for="currentPassword">Mot de passe actuel</label><div class="input-wrap"><input id="currentPassword" name="current_password" type="password" minlength="8" maxlength="128" autocomplete="current-password" required><button class="toggle" type="button" data-target="currentPassword">Voir</button></div></div>
+        <div class="field"><label for="newPassword">Nouveau mot de passe</label><div class="input-wrap"><input id="newPassword" name="new_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required><button class="toggle" type="button" data-target="newPassword">Voir</button></div><div class="hint">8 caractères minimum. Choisissez un mot de passe unique, difficile à deviner.</div></div>
+        <div class="field"><label for="confirmPassword">Confirmer le nouveau mot de passe</label><div class="input-wrap"><input id="confirmPassword" name="confirm_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required><button class="toggle" type="button" data-target="confirmPassword">Voir</button></div></div>
+        <button class="btn" id="submitBtn" type="submit">Enregistrer le nouveau mot de passe</button>
+      </form>
+      <div class="security"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><div>Votre mot de passe est traité par le serveur sécurisé de JEEP. Aucun mot de passe ni clé secrète Supabase n’est enregistré dans cette page.</div></div>
+    </section>
+    <div class="footer">JEEP · Sécurité du compte</div>
+  </main>
+<script>
+(() => {
+  'use strict';
+  const API = 'https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api';
+  const token = sessionStorage.getItem('jeep_session_token');
+  const form = document.getElementById('passwordForm');
+  const message = document.getElementById('message');
+  const submitBtn = document.getElementById('submitBtn');
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    if (history.length > 1) history.back();
+    else window.location.href = '/moi';
+  });
+
+  if (!token) {
+    showMessage('Votre session a expiré. Connectez-vous pour modifier votre mot de passe.', 'error');
+    form.querySelectorAll('input,button').forEach(el => el.disabled = true);
+    setTimeout(() => { window.location.href = '/connexion'; }, 1800);
+  }
+  function showMessage(text, type) {
+    message.textContent = text;
+    message.className = 'message ' + type;
+    message.style.display = 'block';
+  }
+  const errors = {
+    CURRENT_PASSWORD_REQUIRED: 'Saisissez votre mot de passe actuel.',
+    PASSWORD_MIN_8_MAX_128: 'Le nouveau mot de passe doit contenir entre 8 et 128 caractères.',
+    PASSWORDS_DO_NOT_MATCH: 'Les deux nouveaux mots de passe ne correspondent pas.',
+    CURRENT_PASSWORD_INCORRECT: 'Le mot de passe actuel est incorrect.',
+    NEW_PASSWORD_MUST_BE_DIFFERENT: 'Choisissez un mot de passe différent de l’actuel.',
+    PASSWORD_CHANGE_UNAVAILABLE: 'Le changement de mot de passe est momentanément indisponible.',
+    PASSWORD_UPDATE_FAILED: 'Impossible d’enregistrer le nouveau mot de passe. Réessayez.',
+    SESSION_INVALID: 'Votre session a expiré. Veuillez vous reconnecter.'
+  };
+  document.querySelectorAll('.toggle').forEach(button => button.addEventListener('click', () => {
+    const input = document.getElementById(button.dataset.target);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    button.textContent = input.type === 'password' ? 'Voir' : 'Masquer';
+  }));
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    message.style.display = 'none';
+    const current_password = document.getElementById('currentPassword').value;
+    const new_password = document.getElementById('newPassword').value;
+    const confirm_password = document.getElementById('confirmPassword').value;
+    if (new_password.length < 8 || new_password.length > 128) return showMessage(errors.PASSWORD_MIN_8_MAX_128, 'error');
+    if (new_password !== confirm_password) return showMessage(errors.PASSWORDS_DO_NOT_MATCH, 'error');
+    if (current_password === new_password) return showMessage(errors.NEW_PASSWORD_MUST_BE_DIFFERENT, 'error');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Vérification en cours…';
+    try {
+      const response = await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json', 'Authorization':'Bearer ' + token},
+        body: JSON.stringify({action:'change_password', current_password, new_password, confirm_password})
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.ok !== true) {
+        const code = result.error || 'PASSWORD_UPDATE_FAILED';
+        showMessage(errors[code] || 'Une erreur est survenue. Réessayez dans quelques instants.', 'error');
+        if (code === 'SESSION_INVALID') setTimeout(() => { window.location.href = '/connexion'; }, 1800);
+        return;
+      }
+      form.reset();
+      showMessage('Mot de passe modifié avec succès. Votre session actuelle reste ouverte; les autres sessions ont été fermées.', 'ok');
+    } catch (_) {
+      showMessage('Connexion au serveur impossible. Vérifiez votre connexion Internet puis réessayez.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enregistrer le nouveau mot de passe';
+    }
+  });
+  fetch(API, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'branding'})})
+    .then(r => r.json()).then(data => {
+      if (data.ok && data.logo_url) {
+        const img = document.getElementById('logo');
+        img.onload = () => { img.style.display = 'block'; document.getElementById('brandFallback').style.display = 'none'; };
+        img.src = data.logo_url;
+      }
+    }).catch(() => {});
+})();
+</script>
+</body>
+</html>
