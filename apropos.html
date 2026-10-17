@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f3f4f6">
+<title>À propos — JEEP</title>
+<style>
+:root{--bg:#f3f4f6;--ink:#20242a;--muted:#6b7280;--line:#e5e7eb;--card:#fff;--accent:#374151}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.top{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;object-fit:contain;border-radius:12px;background:#f9fafb}.brand{font-weight:800;font-size:18px;letter-spacing:.3px}.sub{font-size:12px;color:var(--muted)}main{max-width:760px;margin:0 auto;padding:20px 15px 40px}.hero{background:linear-gradient(135deg,#fff,#eceff2);border:1px solid var(--line);border-radius:22px;padding:25px 21px;margin-bottom:16px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}.hero h1{font-size:29px;line-height:1.15;margin:8px 0 12px}.hero p{color:#4b5563;margin:0}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:19px;margin:12px 0}.card h2{font-size:17px;margin:0 0 7px}.card p{margin:0;color:#555d68}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini{background:#f9fafb;border:1px solid var(--line);border-radius:14px;padding:14px}.mini strong{display:block;font-size:14px}.mini span{font-size:12px;color:var(--muted)}.note{font-size:12px;color:var(--muted);margin-top:18px;text-align:center}a{color:inherit} .back{display:inline-flex;text-decoration:none;font-weight:700;background:#252a31;color:white;padding:11px 15px;border-radius:12px;margin-top:8px}@media(max-width:420px){.grid{grid-template-columns:1fr}.hero h1{font-size:26px}}
+</style></head>
+<body>
+<header class="top"><img id="logo" class="logo" alt="Logo JEEP"><div><div class="brand">JEEP</div><div class="sub">Informations sur la plateforme</div></div></header>
+<main>
+<section class="hero"><div class="eyebrow">Bienvenue</div><h1>À propos de JEEP</h1><p>Retrouve ici les informations générales sur la plateforme JEEP, ses services et les règles à consulter avant d’effectuer une opération.</p></section>
+<section class="card"><h2>Notre plateforme</h2><p>JEEP regroupe dans un même espace les fonctionnalités disponibles pour le compte utilisateur : consultation du solde, produits, opérations de recharge et de retrait, pointage quotidien, parrainage et informations publiées par l’administration. Les fonctions affichées dépendent de l’état du compte et des services activés.</p></section>
+<section class="card"><h2>Les services</h2><div class="grid"><div class="mini"><strong>Compte personnel</strong><span>Consulter les informations du compte et le solde.</span></div><div class="mini"><strong>Recharges et retraits</strong><span>Soumettre des opérations selon les conditions en vigueur.</span></div><div class="mini"><strong>Produits</strong><span>Consulter les produits et leurs conditions avant achat.</span></div><div class="mini"><strong>Pointage et équipe</strong><span>Consulter les récompenses et le parrainage disponibles.</span></div></div></section>
+<section class="card"><h2>Utilisation responsable</h2><p>Avant toute opération, lis les règles, vérifie le montant, les frais et les conditions applicables. Ne partage jamais ton mot de passe ni tes codes de sécurité. Une capture d’écran ou une demande envoyée ne constitue pas, à elle seule, une preuve de paiement confirmé.</p><a class="back" href="regles.html">Consulter les règles →</a></section>
+<p class="note">JEEP · Page d’information générale. Les conditions officielles affichées dans l’application prévalent.</p>
+</main>
+<script>
+const API='https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api';
+(async()=>{try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'branding'})});const d=await r.json();if(r.ok&&d.logo_url)document.getElementById('logo').src=d.logo_url;}catch(e){/* Logo optionnel si le service est temporairement indisponible. */}})();
+</script></body></html>

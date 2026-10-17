@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f3f4f6">
+<title>Règles — JEEP</title>
+<style>
+:root{--bg:#f3f4f6;--ink:#20242a;--muted:#6b7280;--line:#e5e7eb;--card:#fff;--accent:#252a31}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.top{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;object-fit:contain;border-radius:12px;background:#f9fafb}.brand{font-weight:800;font-size:18px}.sub{font-size:12px;color:var(--muted)}main{max-width:760px;margin:0 auto;padding:20px 15px 42px}.hero{background:linear-gradient(135deg,#fff,#eceff2);border:1px solid var(--line);border-radius:22px;padding:24px 20px;margin-bottom:14px}.eyebrow{text-transform:uppercase;letter-spacing:1.4px;font-size:11px;font-weight:800;color:var(--muted)}h1{font-size:28px;line-height:1.2;margin:7px 0 9px}.hero p{margin:0;color:#59616b}.status{font-size:12px;color:var(--muted);margin:10px 2px}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px;margin:12px 0}.card h2{font-size:17px;margin:0 0 8px}.card p{margin:6px 0;color:#505864}.rules{padding-left:19px;margin:8px 0}.rules li{margin:7px 0;color:#505864}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{border:1px solid var(--line);background:#f9fafb;padding:13px;border-radius:13px}.metric .k{font-size:12px;color:var(--muted)}.metric .v{font-size:20px;font-weight:800;line-height:1.35;margin-top:4px}.small{font-size:12px;color:var(--muted)}.back{display:inline-flex;text-decoration:none;font-weight:700;background:#252a31;color:#fff;padding:11px 15px;border-radius:12px}.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}@media(max-width:400px){.metrics{grid-template-columns:1fr 1fr}.metric .v{font-size:18px}h1{font-size:25px}}
+</style></head>
+<body>
+<header class="top"><img id="logo" class="logo" alt="Logo JEEP"><div><div class="brand">JEEP</div><div class="sub">Règles et conditions</div></div></header>
+<main>
+<section class="hero"><div class="eyebrow">À lire avant toute opération</div><h1>Règles de la plateforme</h1><p>Les montants ci-dessous sont récupérés depuis les paramètres publics enregistrés dans Supabase. Si le chargement échoue, la page l’indiquera au lieu de présenter des chiffres comme vérifiés.</p></section>
+<div id="status" class="status" role="status">Chargement des paramètres…</div>
+<section class="card"><h2>Montants principaux</h2><div class="metrics"><div class="metric"><div class="k">Recharge minimale</div><div id="minDeposit" class="v">—</div></div><div class="metric"><div class="k">Retrait minimal</div><div id="minWithdrawal" class="v">—</div></div><div class="metric"><div class="k">Frais de retrait</div><div id="withdrawFee" class="v">—</div></div><div class="metric"><div class="k">Bonus d’inscription</div><div id="signupBonus" class="v">—</div></div></div></section>
+<section class="card"><h2>1. Compte et inscription</h2><ul class="rules"><li>Utilise des informations exactes et garde tes identifiants confidentiels.</li><li>Le bonus d’inscription affiché dépend du paramètre en vigueur et peut être soumis aux conditions du compte.</li><li>Ne crée pas de comptes multiples pour contourner les limites ou obtenir plusieurs récompenses.</li></ul></section>
+<section class="card"><h2>2. Recharges</h2><ul class="rules"><li>Le montant doit respecter le minimum affiché ci-dessus.</li><li>Vérifie le numéro, l’opérateur et le montant avant de confirmer le paiement.</li><li>Une demande en attente n’est pas une recharge confirmée. Le solde doit être crédité après validation effective.</li></ul></section>
+<section class="card"><h2>3. Retraits</h2><ul class="rules"><li>Le montant demandé doit respecter le minimum affiché ci-dessus.</li><li>Les frais sont calculés selon le taux enregistré dans les paramètres. Vérifie le montant net présenté avant de valider.</li><li>Un retrait peut rester en attente pendant les vérifications. Ne soumets pas plusieurs demandes pour une même opération.</li><li>Renseigne uniquement un compte de paiement qui t’appartient ou que tu es autorisé à utiliser.</li></ul></section>
+<section class="card"><h2>4. Pointage quotidien</h2><p>La récompense configurée actuellement est de <strong id="checkinReward">—</strong> par pointage validé. La disponibilité et la limite quotidienne sont appliquées par le serveur.</p></section>
+<section class="card"><h2>5. Parrainage</h2><p>Les commissions sont calculées sur la base des achats de produits, selon le paramètre de la plateforme. Les taux actuellement enregistrés sont :</p><ul class="rules"><li>Niveau 1 : <strong id="rate1">—</strong></li><li>Niveau 2 : <strong id="rate2">—</strong></li><li>Niveau 3 : <strong id="rate3">—</strong></li></ul><p class="small">Une commission n’est pas garantie : elle dépend d’une opération éligible et de sa validation par le système.</p></section>
+<section class="card"><h2>6. Classement hebdomadaire</h2><p>La récompense configurée est de <strong id="leaderReward">—</strong>. Le seuil enregistré est d’au moins <strong id="leaderMin">—</strong> investisseurs qualifiés. L’éligibilité et le classement doivent être confirmés par le serveur.</p></section>
+<section class="card"><h2>7. Sécurité et litiges</h2><ul class="rules"><li>Ne communique jamais ton mot de passe, ton mot de passe de transaction ni un code secret au service client.</li><li>Conserve les références des opérations et les preuves de paiement jusqu’à leur résolution.</li><li>En cas d’erreur, contacte le support depuis les outils officiels de la plateforme.</li></ul><a class="back" href="apropos.html">← À propos de JEEP</a></section>
+<p class="foot">Les paramètres chiffrés sont chargés depuis la base. Les détails de procédure doivent rester cohérents avec les fonctions serveur réellement activées.</p>
+</main>
+<script>
+const API='https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api';
+const money=n=>Number(n).toLocaleString('fr-FR')+' FCFA';
+const percent=bps=>(Number(bps)/100).toLocaleString('fr-FR',{maximumFractionDigits:2})+' %';
+const set=(id,value)=>{document.getElementById(id).textContent=value};
+(async()=>{
+  try{
+    const [brandResp,settingsResp]=await Promise.all([
+      fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'branding'})}),
+      fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'public_settings'})})
+    ]);
+    const brand=await brandResp.json().catch(()=>({}));
+    if(brandResp.ok&&brand.logo_url)document.getElementById('logo').src=brand.logo_url;
+    const data=await settingsResp.json();
+    if(!settingsResp.ok||!data.ok||!data.settings)throw new Error(data.error||'Paramètres indisponibles');
+    const s=data.settings;
+    set('minDeposit',money(s.minimum_deposit_xof));set('minWithdrawal',money(s.minimum_withdrawal_xof));
+    set('withdrawFee',percent(s.withdrawal_fee_basis_points));set('signupBonus',money(s.signup_bonus_xof));
+    set('checkinReward',money(s.daily_checkin_reward_xof));set('leaderReward',money(s.weekly_leaderboard_reward_xof));
+    set('leaderMin',Number(s.weekly_leaderboard_min_investors).toLocaleString('fr-FR'));
+    const rates=Array.isArray(s.referral_rates_basis_points)?s.referral_rates_basis_points:[];
+    set('rate1',percent(rates[0]??0));set('rate2',percent(rates[1]??0));set('rate3',percent(rates[2]??0));
+    set('status','Paramètres chargés depuis la base JEEP.');
+  }catch(err){set('status','Impossible de charger les paramètres en direct. Réessaie plus tard.');console.error('Chargement des règles JEEP:',err)}
+})();
+</script></body></html>
