@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4a515a">
+<title>Actualités | JEEP</title>
+<style>
+:root{
+  --bg:#eceef2;--card:#fff;--ink:#20242b;--muted:#77808c;--line:#e8eaee;
+  --dark:#303741;--shadow:0 6px 22px rgba(27,39,51,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;background:var(--bg);color:var(--ink)}
+body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+.wrap{max-width:720px;margin:0 auto;padding:14px 12px 24px}
+
+.top{position:sticky;top:0;z-index:5;height:68px;padding:0 16px;color:#fff;background:linear-gradient(165deg,#4d555f 0%,#2e353e 100%);box-shadow:0 4px 16px rgba(27,39,51,.18)}
+.top-inner{max-width:720px;height:100%;margin:auto;display:flex;align-items:center;gap:12px}
+.back,.refresh{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:22px;line-height:1;cursor:pointer;flex-shrink:0}
+.back{font-size:26px}
+.brand{flex:1}
+.brand strong{display:block;font-size:19px;font-weight:800;letter-spacing:-.2px}
+
+.hero{margin:2px 0 14px;padding:22px 20px;border-radius:24px;color:#fff;position:relative;overflow:hidden;background:radial-gradient(90% 70% at 100% 0%,rgba(255,255,255,.12),transparent 65%),linear-gradient(160deg,#4b535d 0%,#323a44 100%);box-shadow:0 8px 22px rgba(27,39,51,.18)}
+.hero:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;border:25px solid rgba(255,255,255,.07);right:-58px;top:-58px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;opacity:.78;font-weight:800}
+.hero h1{font-size:27px;line-height:1.15;margin:8px 0;letter-spacing:-.5px}
+.hero p{font-size:13px;line-height:1.5;margin:0;color:#e3e7eb;max-width:430px}
+.status-line{display:flex;align-items:center;gap:7px;margin-top:14px;font-size:11px;color:#e3e7eb}
+.dot{width:7px;height:7px;background:#8ed4a4;border-radius:50%;display:inline-block}
+
+.tabs{display:flex;gap:6px;padding:5px;background:#dfe3e9;border-radius:999px;margin:12px 0 16px}
+.tab{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border:0;background:transparent;border-radius:999px;padding:12px 8px;font-size:13px;font-weight:800;color:#6c7480;cursor:pointer}
+.tab svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{background:white;color:#222831;box-shadow:0 2px 8px rgba(23,27,34,.1)}
+
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 6px 12px}
+.section-head h2{font-size:16px;font-weight:800;margin:0;color:var(--dark)}
+.section-head span{font-size:11px;color:var(--muted)}
+
+.feed{display:grid;gap:12px}
+.news-card,.panel{background:var(--card);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.news-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.pill{font-size:10px;font-weight:800;border-radius:20px;padding:5px 9px;background:#eceff3;color:#58616d}
+.pill.announcement{background:#fff2d7;color:#88621c}
+.pill.maintenance{background:#fbe9e8;color:#a24742}
+.pill.pinned{background:#e6f3e9;color:#38744e}
+.date{font-size:11px;color:var(--muted);margin-left:auto}
+.news-card h3{font-size:16px;line-height:1.35;margin:0 0 8px}
+.news-body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.65;color:#515a65}
+
+.empty{padding:28px 18px;text-align:center;border-radius:24px;color:var(--muted);background:#fff;box-shadow:var(--shadow);font-size:13px}
+.empty b{display:block;font-size:14px;color:var(--ink);margin-bottom:6px}
+
+.admin-panel{margin-top:16px}
+.admin-panel summary{font-size:14px;font-weight:800;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+.admin-panel summary:after{content:"＋";color:var(--muted)}
+.admin-panel[open] summary:after{content:"−"}
+.form-grid{display:grid;gap:10px;margin-top:15px}
+.field label{display:block;font-size:11px;font-weight:800;color:#68717d;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;border:1px solid #d5dae0;border-radius:14px;background:#f6f7f9;padding:13px;font:inherit;font-size:13px;outline:none}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#596674;background:#fff;box-shadow:0 0 0 3px rgba(89,102,116,.18)}
+.check-row{display:flex;gap:8px;align-items:center;font-size:12px;color:#515a65}
+.btn{border:0;border-radius:999px;padding:12px 18px;font-weight:800;font-size:13px;cursor:pointer}
+.btn-primary{background:linear-gradient(180deg,#4d5560 0%,#353d47 100%);color:#fff;box-shadow:0 6px 14px rgba(30,38,48,.22)}
+.btn-light{background:#eceff3;color:#343a40}
+.btn-danger{background:#fff0ef;color:#a83c36}
+.btn:disabled{opacity:.5;cursor:wait}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+.leader-hero{border-radius:24px;background:radial-gradient(90% 70% at 100% 0%,rgba(255,255,255,.12),transparent 65%),linear-gradient(160deg,#4b535d 0%,#323a44 100%);padding:20px 18px;color:#fff;margin-bottom:12px;box-shadow:0 8px 22px rgba(27,39,51,.18)}
+.leader-hero h2{display:flex;align-items:center;gap:8px;margin:0 0 5px;font-size:19px}
+.leader-hero h2 svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.leader-hero p{font-size:12px;line-height:1.5;color:#dde2e8;margin:0}
+.window-label{font-size:11px;color:#dde2e8;margin-top:12px}
+.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:8px;align-items:end;margin:18px 0 4px}
+.podium-item{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:12px 5px;text-align:center;min-width:0}
+.podium-item.first{padding-top:17px;padding-bottom:17px;background:rgba(255,255,255,.14)}
+.medal{font-size:24px}
+.podium-name{font-size:11px;font-weight:800;overflow-wrap:anywhere;margin:7px 0}
+.podium-count{font-size:11px;color:#dde2e8}
+.podium-reward{font-size:12px;font-weight:900;margin-top:8px;color:#ffe49a}
+
+.rank-list{display:grid;gap:10px}
+.rank-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;padding:14px;box-shadow:var(--shadow)}
+.rank-number{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:#eceff3;font-weight:900;font-size:13px;flex-shrink:0}
+.rank-info{flex:1;min-width:0}
+.rank-info strong{display:block;font-size:13px}
+.rank-info small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.rank-reward{text-align:right;font-weight:900;font-size:12px;white-space:nowrap}
+.rank-reward small{display:block;font-size:10px;font-weight:600;color:var(--muted);margin-top:3px}
+.rules{font-size:11px;line-height:1.6;color:var(--muted);margin:14px 6px}
+.reward-config{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.reward-config .field input{padding:10px 7px;text-align:center}
+
+.notice{padding:12px 14px;border-radius:14px;font-size:12px;line-height:1.5;margin-bottom:12px;display:none}
+.notice.show{display:block}
+.notice.error{background:#fff0ef;color:#9c3934}
+.notice.ok{background:#e9f5ec;color:#2d7143}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:8;padding:9px 8px calc(9px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
+.nav-inner{max-width:720px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.nav-item{text-decoration:none;color:#a1a8b2;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;font-size:11px;font-weight:650;min-height:52px}
+.nav-item svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active{color:var(--dark);font-weight:800}
+.nav-item.active svg{stroke-width:2.3}
+
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid #ffffff70;border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
+@media(min-width:600px){.wrap{padding-left:20px;padding-right:20px}.hero{padding:26px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+<button class="back" onclick="history.length>1?history.back():location.href='/dashboard'" aria-label="Retour">‹</button>
+<div class="brand"><strong>Actualités JEEP</strong></div>
+<button class="refresh" id="refreshBtn" aria-label="Actualiser" title="Actualiser">↻</button>
+</div></header>
+<main class="wrap">
+<section class="hero">
+<div class="eyebrow">Le fil officiel JEEP</div>
+<h1>Restez informé.</h1>
+<p>Retrouvez ici les annonces importantes, les nouveautés et le classement des meilleurs parrains.</p>
+<div class="status-line"><span class="dot"></span><span id="updatedLabel">Chargement des dernières informations…</span></div>
+</section>
+<div id="notice" class="notice" role="status"></div>
+<div class="tabs" role="tablist">
+<button class="tab active" id="tabNews" role="tab" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/></svg>Actualités</button>
+<button class="tab" id="tabRank" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Classement</button>
+</div>
+<section id="newsView">
+<div class="section-head"><h2>Dernières informations</h2><span id="newsCount">—</span></div>
+<div id="newsFeed" class="feed"><div class="empty"><b>Chargement…</b>Nous récupérons les actualités.</div></div>
+<details id="adminNews" class="panel admin-panel hidden">
+<summary>Publier une annonce (administration)</summary>
+<form id="newsForm" class="form-grid">
+<div class="field"><label for="newsTitle">TITRE</label><input id="newsTitle" maxlength="160" required placeholder="Ex. Information importante"></div>
+<div class="field"><label for="newsCategory">CATÉGORIE</label><select id="newsCategory"><option value="information">Information</option><option value="announcement">Annonce</option><option value="maintenance">Maintenance</option><option value="leaderboard">Classement</option></select></div>
+<div class="field"><label for="newsBody">MESSAGE</label><textarea id="newsBody" maxlength="10000" required placeholder="Écris le message que tous les utilisateurs pourront lire…"></textarea></div>
+<label class="check-row"><input type="checkbox" id="newsPinned"> Épingler cette annonce en haut du fil</label>
+<div class="admin-actions"><button class="btn btn-primary" id="publishBtn" type="submit">Publier l’annonce</button></div>
+</form>
+</details>
+</section>
+<section id="rankView" class="hidden">
+<div class="leader-hero">
+<h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Meilleurs parrains</h2>
+<p>Classement calculé à partir des filleuls actifs inscrits pendant les 7 derniers jours et ayant déjà effectué un achat de produit.</p>
+<div class="window-label" id="windowLabel">Période : 7 derniers jours glissants</div>
+<div class="podium" id="podium">
+<div class="podium-item"><div class="medal">🥈</div><div class="podium-name">—</div><div class="podium-count">Chargement</div></div>
+<div class="podium-item first"><div class="medal">🥇</div><div class="podium-name">—</div><div class="podium-count">Chargement</div></div>
+<div class="podium-item"><div class="medal">🥉</div><div class="podium-name">—</div><div class="podium-count">Chargement</div></div>
+</div>
+</div>
+<div class="section-head"><h2>Classement détaillé</h2><span>Récompenses en XOF</span></div>
+<div id="rankList" class="rank-list"><div class="empty"><b>Chargement du classement…</b></div></div>
+<p class="rules">Les récompenses configurées sont créditées automatiquement au classement traité, au maximum une fois tous les 7 jours. Le classement visible est recalculé sur la fenêtre glissante des 7 derniers jours. Les numéros de téléphone ne sont pas affichés intégralement.</p>
+<details id="adminRewards" class="panel admin-panel hidden">
+<summary>Configurer les récompenses (administration)</summary>
+<p style="font-size:12px;line-height:1.5;color:#77808c;margin:12px 0 0">Les montants sont en FCFA. Une récompense à 0 désactive le versement pour cette place.</p>
+<form id="rewardForm">
+<div class="reward-config">
+<div class="field"><label for="reward1">🥇 1re PLACE</label><input id="reward1" type="number" min="0" step="1" required value="5000"></div>
+<div class="field"><label for="reward2">🥈 2e PLACE</label><input id="reward2" type="number" min="0" step="1" required value="3000"></div>
+<div class="field"><label for="reward3">🥉 3e PLACE</label><input id="reward3" type="number" min="0" step="1" required value="2000"></div>
+</div>
+<div class="admin-actions"><button class="btn btn-primary" id="saveRewardsBtn" type="submit">Enregistrer les récompenses</button></div>
+</form>
+</details>
+</section>
+</main>
+<nav class="bottom-nav" aria-label="Navigation principale"><div class="nav-inner">
+<a class="nav-item" href="/dashboard"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9M9 21v-7h6v7"/></svg><span>Accueil</span></a>
+<a class="nav-item" href="/produit"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg><span>Produit</span></a>
+<a class="nav-item" href="/equipe"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8M19 15a6 6 0 0 1 3 5"/></svg><span>Équipe</span></a>
+<a class="nav-item active" href="/actualites" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/></svg><span>Actualités</span></a>
+<a class="nav-item" href="/moi"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Moi</span></a>
+</div></nav>
+<script>
+"use strict";
+const API_URL="https://nayyovsuollsdvxtslmb.supabase.co/functions/v1/jeep-api";
+const SESSION_KEY="jeep_session_token";
+let currentUser=null, newsItems=[], leaderboardData=null, rewardConfig=[];
+const $=id=>document.getElementById(id);
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function money(v){return new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(Number(v)||0)+" FCFA";}
+function fmtDate(v){if(!v)return "";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(d);}
+function apiError(e){const map={SESSION_INVALID:"Ta session a expiré. Reconnecte-toi.",ADMIN_REQUIRED:"Accès réservé à l’administration.",NEWS_UNAVAILABLE:"Impossible de charger les actualités.",LEADERBOARD_UNAVAILABLE:"Impossible de charger le classement.",NEWS_CREATE_FAILED:"La publication a échoué.",NEWS_UPDATE_FAILED:"La modification a échoué.",NEWS_DELETE_FAILED:"La suppression a échoué.",REWARD_CONFIG_SAVE_FAILED:"L’enregistrement des récompenses a échoué."};return map[e]||"Une erreur est survenue ("+String(e||"inconnue")+").";}
+async function api(action,payload={}){const token=sessionStorage.getItem(SESSION_KEY);if(!token){location.replace("/connexion");throw new Error("SESSION_INVALID");}let response;try{response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...payload})});}catch(e){throw new Error("NETWORK_ERROR");}let data={};try{data=await response.json();}catch{}if(response.status===401||data.error==="SESSION_INVALID"){["jeep_session_token","jeep_user_id","jeep_user_country","jeep_user_role"].forEach(k=>sessionStorage.removeItem(k));location.replace("/connexion");throw new Error("SESSION_INVALID");}if(!response.ok||data.error)throw new Error(data.error||"REQUEST_FAILED");return data;}
+function showNotice(message,type="ok"){const n=$("notice");n.textContent=message;n.className="notice show "+(type==="error"?"error":"ok");window.setTimeout(()=>n.classList.remove("show"),5000);}
+function setLoading(btn,on,label){if(!btn)return;if(on){btn.dataset.old=btn.innerHTML;btn.disabled=true;btn.innerHTML='<span class="spinner"></span> '+(label||"Patiente…");}else{btn.disabled=false;if(btn.dataset.old)btn.innerHTML=btn.dataset.old;}}
+function categoryLabel(c){return ({information:"Information",announcement:"Annonce",maintenance:"Maintenance",leaderboard:"Classement"})[c]||"Information";}
+function renderNews(){const root=$("newsFeed");$("newsCount").textContent=newsItems.length+" publication"+(newsItems.length>1?"s":"");if(!newsItems.length){root.innerHTML='<div class="empty"><b>Aucune actualité pour le moment</b>Les nouvelles informations publiées par JEEP apparaîtront ici.</div>';return;}root.innerHTML=newsItems.map(n=>`<article class="news-card"><div class="news-meta"><span class="pill ${escapeHtml(n.category)}">${escapeHtml(categoryLabel(n.category))}</span>${n.is_pinned?'<span class="pill pinned">📌 Épinglée</span>':""}<span class="date">${escapeHtml(fmtDate(n.published_at||n.created_at))}</span></div><h3>${escapeHtml(n.title)}</h3><div class="news-body">${escapeHtml(n.body)}</div>${currentUser?.role==="admin"?`<div class="admin-actions"><button class="btn btn-light" data-pin="${escapeHtml(n.id)}">${n.is_pinned?"Désépingler":"Épingler"}</button><button class="btn btn-danger" data-delete="${escapeHtml(n.id)}">Supprimer</button></div>`:""}</article>`).join("");root.querySelectorAll("[data-pin]").forEach(b=>b.addEventListener("click",async()=>{try{await api("admin_news_update",{news_id:b.dataset.pin,is_pinned:b.textContent.trim()==="Épingler"});await loadNews();showNotice("Annonce mise à jour.");}catch(e){showNotice(apiError(e.message),"error");}}));root.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",async()=>{if(!confirm("Supprimer cette actualité ?"))return;try{await api("admin_news_delete",{news_id:b.dataset.delete});await loadNews();showNotice("Actualité supprimée.");}catch(e){showNotice(apiError(e.message),"error");}}));}
+async function loadNews(){const d=await api("news");newsItems=d.news||[];renderNews();}
+function medal(rank){return rank===1?"🥇":rank===2?"🥈":rank===3?"🥉":"#"+rank;}
+function renderLeaderboard(){const rows=leaderboardData?.leaderboard||[];const rewards=leaderboardData?.rewards||rewardConfig||[];const rewardFor=(rank)=>{const r=rewards.find(x=>Number(x.rank)===rank||Number(x.rank_position)===rank);return r&&r.is_active!==false?Number(r.reward_xof)||0:0;};const start=leaderboardData?.window_start,end=leaderboardData?.window_end;$("windowLabel").textContent="Période : "+(start&&end?new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short"}).format(new Date(start+"T00:00:00Z"))+" – "+new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(end+"T00:00:00Z")):"7 derniers jours glissants");const byRank=[1,2,3].map(r=>rows.find(x=>Number(x.rank)===r)).filter(Boolean);const podiumSlots=[rows.find(x=>Number(x.rank)===2),rows.find(x=>Number(x.rank)===1),rows.find(x=>Number(x.rank)===3)];$("podium").innerHTML=podiumSlots.map((r,i)=>{const rank=[2,1,3][i];return `<div class="podium-item ${rank===1?"first":""}"><div class="medal">${medal(rank)}</div><div class="podium-name">${escapeHtml(r?.display_name||"—")}</div><div class="podium-count">${r?Number(r.qualifying_investees||0)+" filleul"+(Number(r.qualifying_investees||0)>1?"s":""):"Aucun résultat"}</div><div class="podium-reward">${money(r?Number(r.reward_xof??rewardFor(rank)):rewardFor(rank))}</div></div>`;}).join("");const list=$("rankList");if(!rows.length){list.innerHTML='<div class="empty"><b>Le classement se prépare</b>Les parrains ayant des filleuls qualifiés apparaîtront ici.</div>';return;}list.innerHTML=rows.map(r=>`<div class="rank-row"><div class="rank-number">${medal(Number(r.rank))}</div><div class="rank-info"><strong>${escapeHtml(r.display_name||"Parrain JEEP")}</strong><small>${Number(r.qualifying_investees||0)} filleul${Number(r.qualifying_investees||0)>1?"s":""} qualifié${Number(r.qualifying_investees||0)>1?"s":""} sur 7 jours</small></div><div class="rank-reward">${money(Number(r.reward_xof??rewardFor(Number(r.rank))))}<small>${r.status==="awarded"?"Récompense créditée":"Récompense prévue"}</small></div></div>`).join("");}
+async function loadLeaderboard(){leaderboardData=await api("leaderboard");rewardConfig=leaderboardData.rewards||[];renderLeaderboard();if(leaderboardData.payout_due){showNotice("Le traitement automatique du classement a été effectué.");}}
+async function loadRewardConfig(){const d=await api("leaderboard_rewards");rewardConfig=d.rewards||[];$("reward1").value=rewardConfig.find(r=>r.rank_position===1)?.reward_xof??5000;$("reward2").value=rewardConfig.find(r=>r.rank_position===2)?.reward_xof??3000;$("reward3").value=rewardConfig.find(r=>r.rank_position===3)?.reward_xof??2000;}
+function showTab(which){const rank=which==="rank";$("newsView").classList.toggle("hidden",rank);$("rankView").classList.toggle("hidden",!rank);$("tabNews").classList.toggle("active",!rank);$("tabRank").classList.toggle("active",rank);$("tabNews").setAttribute("aria-selected",String(!rank));$("tabRank").setAttribute("aria-selected",String(rank));if(rank)loadLeaderboard().catch(e=>showNotice(apiError(e.message),"error"));}
+$("tabNews").addEventListener("click",()=>showTab("news"));$("tabRank").addEventListener("click",()=>showTab("rank"));
+$("refreshBtn").addEventListener("click",async()=>{const b=$("refreshBtn");b.disabled=true;b.textContent="…";try{await Promise.all([loadNews(),loadLeaderboardIfVisible()]);$("updatedLabel").textContent="Mis à jour à "+new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit"}).format(new Date());}catch(e){showNotice(apiError(e.message),"error");}finally{b.disabled=false;b.textContent="↻";}});
+async function loadLeaderboardIfVisible(){if(!$("rankView").classList.contains("hidden"))await loadLeaderboard();}
+$("newsForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("publishBtn");setLoading(btn,true,"Publication…");try{await api("admin_news_create",{title:$("newsTitle").value.trim(),body:$("newsBody").value.trim(),category:$("newsCategory").value,is_pinned:$("newsPinned").checked,is_published:true});$("newsForm").reset();await loadNews();showNotice("Annonce publiée pour tous les utilisateurs.");}catch(err){showNotice(apiError(err.message),"error");}finally{setLoading(btn,false);}});
+$("rewardForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveRewardsBtn");const rewards=[1,2,3].map(rank=>({rank_position:rank,reward_xof:Number($("reward"+rank).value),is_active:Number($("reward"+rank).value)>0}));if(rewards.some(r=>!Number.isSafeInteger(r.reward_xof)||r.reward_xof<0)){showNotice("Entre des montants entiers positifs ou zéro.","error");return;}setLoading(btn,true,"Enregistrement…");try{const d=await api("admin_update_leaderboard_rewards",{rewards});rewardConfig=d.rewards||rewards;showNotice("Les récompenses ont été enregistrées.");await loadLeaderboard();}catch(err){showNotice(apiError(err.message),"error");}finally{setLoading(btn,false);}});
+async function init(){try{const me=await api("me");currentUser=me.user||null;if(currentUser?.role==="admin"){$("adminNews").classList.remove("hidden");$("adminRewards").classList.remove("hidden");await loadRewardConfig();}await loadNews();await loadLeaderboard();$("updatedLabel").textContent="Dernière actualisation : "+new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit"}).format(new Date());}catch(e){if(e.message!=="SESSION_INVALID")showNotice(apiError(e.message),"error");}}
+init();
+</script>
+</body>
+</html>
