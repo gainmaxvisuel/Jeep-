@@ -864,10 +864,11 @@
 
       if (!method.requires_payer_code) payerCode.value = "";
 
-      $("paymentDescription").textContent =
-        method.transfer_instructions ||
-        ("Opérateur : " + selectedOperator.name +
-         ". Vérifie le numéro utilisé et suis les instructions de paiement.");
+      const description = String(method.transfer_instructions || "").trim();
+const descriptionElement = $("paymentDescription");
+
+descriptionElement.textContent = description;
+descriptionElement.hidden = !description;
 
       const beneficiary = $("beneficiaryNumber");
       const beneficiaryNumber = String(method.beneficiary_number || "").trim();
