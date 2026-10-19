@@ -455,6 +455,50 @@
       .operator.selected { padding: 8px; }
       .operator-logo { width: 35px; height: 35px; }
     }
+
+    
+/* Instructions de paiement plus visibles */
+.payment-instructions {
+  background: #fff;
+  border: 2px solid #d5dae0;
+  border-radius: 20px;
+  padding: 20px 16px;
+  margin-top: 18px;
+}
+
+.payment-instructions h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #303741;
+  margin: 0 0 14px;
+}
+
+/* Instructions provenant de la base */
+#paymentDescription {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.8;
+  color: #20242b;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Numéro du bénéficiaire en grand */
+#beneficiaryNumber {
+  margin: 16px 0 0;
+  padding: 18px 12px;
+  background: #edf9f1;
+  border: 2px solid #b8e2c7;
+  border-radius: 16px;
+  color: #17683e;
+  font-size: clamp(23px, 6vw, 32px);
+  font-weight: 900;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+    
   </style>
 </head>
 
@@ -864,18 +908,21 @@
 
       if (!method.requires_payer_code) payerCode.value = "";
 
-      const description = String(method.transfer_instructions || "").trim();
+      
+const description = String(method.transfer_instructions || "").trim();
 const descriptionElement = $("paymentDescription");
 
 descriptionElement.textContent = description;
 descriptionElement.hidden = !description;
 
-      const beneficiary = $("beneficiaryNumber");
-      const beneficiaryNumber = String(method.beneficiary_number || "").trim();
-      beneficiary.hidden = !beneficiaryNumber;
-      beneficiary.textContent = beneficiaryNumber
-        ? "Numéro du bénéficiaire : " + beneficiaryNumber
-        : "";
+const beneficiary = $("beneficiaryNumber");
+const number = String(method.beneficiary_number || "").trim();
+
+beneficiary.hidden = !number;
+beneficiary.textContent = number
+  ? "Numéro du bénéficiaire\n" + number
+  : "";
+      
 
       const template = method.ussd_template;
 
